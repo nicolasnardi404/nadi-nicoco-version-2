@@ -22,26 +22,16 @@ const options = {
   },
 }
 
-const Post = ({ data }) => {
-    return (
-        <div>
-            <h1>{data.post.title}</h1>
-            <p>{renderRichText(data.post.content, options)}</p>
-        </div>
-    )
+const Post = ({ pageContext }) => {
+  const { post } = pageContext;
+  console.log(post)
+
+  return (
+    <div>
+      <h1>{post.title}</h1>
+      <p>{renderRichText(post.content, options)}</p>
+    </div>
+  )
 }
 
 export default Post;
-export const pageQuery = graphql`
-    query($postId: Int!) {
-        post: contentfulPost( postId: { eq: $postId }) {
-            type,
-            createdAt,
-            title,
-            postId,
-            content {
-                raw
-            }
-        }
-    }
-`
