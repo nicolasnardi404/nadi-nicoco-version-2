@@ -10,6 +10,7 @@ module.exports = {
     siteUrl: `https://nadinicoco.com/`,
   },
   plugins: [
+    "babel-plugin-styled-components",
     `gatsby-plugin-image`,
     {
       resolve: `gatsby-source-filesystem`,
