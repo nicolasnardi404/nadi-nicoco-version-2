@@ -2,6 +2,9 @@ import React from 'react';
 import { renderRichText } from 'gatsby-source-contentful/rich-text';
 import { INLINES, BLOCKS, MARKS } from '@contentful/rich-text-types';
 import styled from 'styled-components';
+import Layout from '../components/layout';
+import Seo from '../components/seo';
+import "../components/layout.css";
 
 const options = {
     renderMark: {
