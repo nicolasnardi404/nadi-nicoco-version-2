@@ -6,73 +6,34 @@ const CATEGORIES = ["music", "performance", "photo", "post", "video", "writing"]
 exports.createPages = async ({ graphql, actions }) => {
   const { createPage } = actions;
 
-  try {
-    // const postResults = await graphql(ALL_CONTENTFUL_POSTS);
-    const musicResults = await graphql(ALL_CONTENTFUL_MUSICS);
+  const musicResults = await graphql(ALL_CONTENTFUL_MUSICS);
 
-    // const photoResults = await graphql(ALL_CONTENTFUL_PHOTOS);
-    const categoryResults = {
-      // performance: postResults.data.allContentfulPost.edges,
-      music: musicResults.data.allContentfulMusic.edges,
-      // photo: photoResults.data.allContentfulPhoto.edges
-    };
+  const categoryResults = {
+    music: musicResults.data.allContentfulMusic.edges,
+  };
 
-
-    // if (result.errors) {
-    //   console.log("Error with data", result.errors)
-    // }
-
-    for (let category of CATEGORIES) {
-      createPage({
-        path: `${category}`,
-        component: path.resolve(`src/templates/category-list.js`),
-        data: { category: categoryResults[category], titlo: category },
-        context: {
-          category: categoryResults[category],
-          title: category,
-        }
-      })
-    }
-
-    // const postTemplate = path.resolve("./src/templates/post.js")
-    const musicTemplate = path.resolve("./src/templates/music.js")
-    // console.log('resolving', postTemplate)
-    // console.log('result', result.data.allContentfulPost.edges)
-
-    // postResults.data.allContentfulPost.edges.forEach(edge => {
-    //   console.log('creating page', edge.node.id)
-    //   createPage({
-    //     path: `performance/${edge.node.id}`,
-    //     component: postTemplate,
-    //     context: {
-    //       post: edge.node
-    //     },
-    //   })
-    // })
-
-    musicResults.data.allContentfulMusic.edges.forEach(edge => {
-      console.log(edge.node.id)
-      createPage({
-        path: `music/${edge.node.id}`,
-        component: musicTemplate,
-        context: {
-          music: edge.node
-        },
-      })
+  for (let category of CATEGORIES) {
+    console.log('creating page for category: ', category)
+    createPage({
+      path: `${category}`,
+      component: path.resolve(`src/templates/category-list.js`),
+      data: { category: categoryResults[category], title: category },
+      context: {
+        category: categoryResults[category],
+        title: category,
+      }
     })
-
-    // result.data.allContentfulPost.edges.forEach(post => {
-    //   console.log(post.node)
-    //   createPage({
-    //     path: `posts/${post.node.postId}`,
-    //     component: postTemplate,
-    //     data: post.node,
-    //     context: {
-    //       postId: post.node.postId
-    //     }
-    //   })
-    // })
-  } catch {
-    (error => console.log('Error with contentful', error))
   }
+
+  const musicTemplate = path.resolve("./src/templates/music.js");
+  musicResults.data.allContentfulMusic.edges.forEach(edge => {
+    console.log(edge.node.id)
+    createPage({
+      path: `music/${edge.node.id}`,
+      component: musicTemplate,
+      context: {
+        music: edge.node
+      },
+    })
+  })
 }

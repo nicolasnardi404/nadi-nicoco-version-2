@@ -27,23 +27,29 @@ const ALL_CONTENTFUL_POSTS = `
       }`
 
 const ALL_CONTENTFUL_MUSICS = `{
-    allContentfulMusic {
-      edges {
-        node {
-          id
-          title
-          description {
-            raw
+  allContentfulMusic {
+    edges {
+      node {
+        id
+        title
+        description {
+          raw
+        }
+        embed {
+          embed
+        }
+        cover {
+          file {
+            fileName
+            contentType
           }
-          embed {
-            embed
-            id
-          }
+          url
+          publicUrl
         }
       }
     }
   }
-`
+}`
 
 const ALL_CONTENTFUL_PHOTOS = `{
     allContentfulPhoto {
