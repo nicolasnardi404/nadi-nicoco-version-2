@@ -1,14 +1,13 @@
 import React from 'react';
 import { renderRichText } from 'gatsby-source-contentful/rich-text';
-import { INLINES, BLOCKS, MARKS } from '@contentful/rich-text-types';
-import styled from 'styled-components';
-import Layout from '../components/layout';
-import Seo from '../components/seo';
+import { INLINES, BLOCKS, MARKS, Block, Inline } from '@contentful/rich-text-types';
+import styled, { StyledComponent } from 'styled-components';
 import "../components/layout.css";
+import { Music } from '../types/music';
 
 const options = {
     renderMark: {
-        [MARKS.BOLD]: (text) => <b className="font-bold">{text}</b>,
+        [MARKS.BOLD]: (text) => (<b className="font-bold">{text}</b>),
     },
     renderNode: {
         [INLINES.HYPERLINK]: (node, children) => {
@@ -25,7 +24,11 @@ const options = {
     },
 }
 
-const Hero = styled.div`
+interface HeroProps {
+    background: string;
+}
+
+const Hero = styled.div<HeroProps>`
     background: url(${props => props.background});
     background-size: cover;
     background-position: center;
@@ -38,7 +41,9 @@ const Hero = styled.div`
     padding: 4rem;
 `
 
-const Post = ({ pageContext }) => {
+
+
+const Post: React.FC<{ pageContext: { music: Music } }> = ({ pageContext }) => {
     const { music } = pageContext;
     console.log(music)
 
