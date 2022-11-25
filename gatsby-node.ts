@@ -37,7 +37,7 @@ export const createPages: GatsbyNode['createPages'] = async ({ graphql, actions 
 
   for (let category of CATEGORIES) {
     console.log('creating page for category: ', category)
-    createPage<{ category: Music[], title: string }>({
+    createPage<{ category: any[], title: string }>({
       path: `/${category}`,
       component: path.resolve(`src/templates/category-list.tsx`),
       context: {
