@@ -16,13 +16,13 @@ const links = [
   //   url: "/performance",
   // },
   {
-    text: "Music",
+    text: "music",
     url: "/music",
   },
-  // {
-  //   text: "Video",
-  //   url: "/video",
-  // },
+  {
+    text: "video art",
+    url: "/videoart",
+  },
   // {
   //   text: "Poetry",
   //   url: "/poetry",

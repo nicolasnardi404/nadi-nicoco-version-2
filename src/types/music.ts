@@ -1,9 +1,12 @@
 import { ContentfulRichTextGatsbyReference, RenderRichTextData } from "gatsby-source-contentful/rich-text";
 
-export interface Music {
+export interface Music extends BasicPost {
+    cover: File;
+}
+
+export interface BasicPost {
     id: string;
     title: string;
-    cover: File;
     embed: { embed: string }
     description: RenderRichTextData<ContentfulRichTextGatsbyReference>
 }

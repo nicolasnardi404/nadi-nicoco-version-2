@@ -1,22 +1,9 @@
 import { GatsbyNode } from "gatsby";
 import path from "path";
-import { ALL_CONTENTFUL_POSTS, ALL_CONTENTFUL_PHOTOS, ALL_CONTENTFUL_MUSICS } from "./queries";
-import { Music } from "./src/types/music.js";
+import { ALL_CONTENTFUL_MUSICS, ALL_CONTENTFUL_VIDEOART } from "./queries";
+import { BasicPost, Music } from "./src/types/music.js";
 
-const CATEGORIES = ["music", "performance", "photo", "post", "video", "writing"].slice(0, 1);
-
-// export const sourceNodes: GatsbyNode['sourceNodes'] = async ({ graphql, actions }) => {
-//   const { createPage, createNode } = actions;
-
-//   console.log('hererereres?')
-//   // try {
-//   const musicResults: {
-//     errors?: any;
-//     data?: any;
-//   } = await graphql(ALL_CONTENTFUL_MUSICS);
-
-//   console.log(musicResults.data);
-// }
+const CATEGORIES = ["music", "video art", "performance", "photo", "post", "writing"].slice(0, 2);
 
 export const createPages: GatsbyNode['createPages'] = async ({ graphql, actions }) => {
   const { createPage, createNode } = actions;
@@ -29,16 +16,23 @@ export const createPages: GatsbyNode['createPages'] = async ({ graphql, actions 
     data?: any;
   } = await graphql(ALL_CONTENTFUL_MUSICS);
 
-  console.log(musicResults.data);
+  const videoArtResults: {
+    errors?: any;
+    data?: any;
+  } = await graphql(ALL_CONTENTFUL_VIDEOART);
+
+  console.log(`Got ${musicResults?.data?.allContentfulMusic.edges.length} music results.`)
+  console.log(`Got ${videoArtResults?.data?.allContentfulVideoArt.edges.length} video art results.`)
 
   const categoryResults: { [key: string]: any } = {
     music: (musicResults?.data?.allContentfulMusic.edges.map(({ node }) => node) || []) as Music[],
+    'video art': (videoArtResults?.data?.allContentfulVideoArt.edges.map(({ node }) => node) || []) as BasicPost[],
   };
 
   for (let category of CATEGORIES) {
     console.log('creating page for category: ', category)
     createPage<{ category: any[], title: string }>({
-      path: `/${category}`,
+      path: `/${category.replace(' ', '')}`,
       component: path.resolve(`src/templates/category-list.tsx`),
       context: {
         category: categoryResults[category],
@@ -46,14 +40,14 @@ export const createPages: GatsbyNode['createPages'] = async ({ graphql, actions 
       }
     })
 
-    const categoryTemplate = path.resolve(`./src/templates/${category}.tsx`);
+    const categoryTemplate = path.resolve(`./src/templates/${category.replace(' ', '')}.tsx`);
     categoryResults[category].forEach((entry: any) => {
       console.log(entry.id)
       createPage({
-        path: `/${category}/${entry.id}`,
+        path: `/${category.replace(' ', '')}/${entry.id}`,
         component: categoryTemplate,
         context: {
-          music: entry
+          [category.replace(' ', '')]: entry
         },
       })
     })
