@@ -55,7 +55,7 @@ const Post: React.FC<{ pageContext: { videoart: BasicPost } }> = ({ pageContext 
         <div>
             <h1>{videoart.title}</h1>
             <div dangerouslySetInnerHTML={createMarkup(videoart.embed?.embed)}></div>
-            {renderRichText(videoart.description, options)}
+            {videoart.description && renderRichText(videoart.description, options)}
         </div>
     )
 }

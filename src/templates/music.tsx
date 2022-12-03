@@ -57,7 +57,7 @@ const Post: React.FC<{ pageContext: { music: Music } }> = ({ pageContext }) => {
             <Hero background={music.cover.publicUrl} >
                 <div dangerouslySetInnerHTML={createMarkup(music.embed?.embed)}></div>
             </Hero>
-            {renderRichText(music.description, options)}
+            {music.description && renderRichText(music.description, options)}
         </div>
     )
 }
