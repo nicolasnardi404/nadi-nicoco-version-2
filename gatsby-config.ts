@@ -29,6 +29,19 @@ module.exports = {
       }
     },
     {
+      resolve: `gatsby-omni-font-loader`,
+      options: {
+        enableListener: true,
+        preconnect: [`https://fonts.googleapis.com`, `https://fonts.gstatic.com`],
+        web: [
+          {
+            name: 'VCR OSD Mono',
+            file: `https://fonts.cdnfonts.com/css/vcr-osd-mono`,
+          },
+        ],
+      },
+    },
+    {
       resolve: `gatsby-plugin-manifest`,
       options: {
         name: `gatsby-starter-default`,
