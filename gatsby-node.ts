@@ -3,12 +3,11 @@ import path from "path";
 import { ALL_CONTENTFUL_MUSICS, ALL_CONTENTFUL_VIDEOART } from "./queries";
 import { BasicPost, Music } from "./src/types/music.js";
 
-const CATEGORIES = ["music", "video art", "performance", "photo", "post", "writing"].slice(0, 2);
+const CATEGORIES = ["x-sound", "x-art", "cyborg-text"].slice(0, 2);
 
 export const createPages: GatsbyNode['createPages'] = async ({ graphql, actions }) => {
   const { createPage, createNode } = actions;
 
-  console.log('hererereres?')
   console.log(ALL_CONTENTFUL_MUSICS);
   // try {
   const musicResults: {
@@ -25,8 +24,8 @@ export const createPages: GatsbyNode['createPages'] = async ({ graphql, actions 
   console.log(`Got ${videoArtResults?.data?.allContentfulVideoArt.edges.length} video art results.`)
 
   const categoryResults: { [key: string]: any } = {
-    music: (musicResults?.data?.allContentfulMusic.edges.map(({ node }) => node) || []) as Music[],
-    'video art': (videoArtResults?.data?.allContentfulVideoArt.edges.map(({ node }) => node) || []) as BasicPost[],
+    'x-sound': (musicResults?.data?.allContentfulMusic.edges.map(({ node }) => node) || []) as Music[],
+    'x-art': (videoArtResults?.data?.allContentfulVideoArt.edges.map(({ node }) => node) || []) as BasicPost[],
   };
 
   for (let category of CATEGORIES) {
