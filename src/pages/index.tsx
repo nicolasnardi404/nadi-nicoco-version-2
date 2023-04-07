@@ -63,30 +63,92 @@ const useOutsideClick = (ref, callback) => {
     };
   });
 }
+const randomNum = (max: number, min?: number) => Math.floor(Math.random() * max) + (min || 0);
+let initializing = true
 
 const IndexPage = () => {
-  const [selected, setSelected] = useState(null);
+  const [selected, setSelected] = useState(links.map(l => null));
   const listRef = useRef(null);
-  const [clicked, setClicked] = useState(false);
+  const [clicked, setClicked] = useState(links.map(l => false));
+  const [dragging, setDragging] = useState(links.map(l => false));
+  const [position, setPosition] = useState(links.map(l => ({ top: 0, left: 0 })));
+  const [offset, setOffset] = useState(links.map(l => ({ x: 0, y: 0 })));
+  const [latestClicked, setLatestClicked] = useState(null);
+
+  useEffect(() => {
+    if (initializing)
+      setPosition(links.map(l => ({ top: randomNum(window.innerHeight - 240, 142), left: randomNum(window.innerWidth - 120) })))
+    initializing = false
+  })
+
 
   useEffect(() => {
     let timer;
-    if (clicked)
-      timer = setTimeout(() => { setClicked(false) }, 300);
+    console.log('effective')
+    if (latestClicked !== null && clicked[latestClicked])
+      timer = setTimeout(() => { spliceState(setClicked, clicked, latestClicked, false) }, 300);
     return () => clearTimeout(timer);
   }, [clicked]);
 
 
-  const handleSingleClick = (event, index) => {
-    setSelected(index)
-    if (clicked)
-      window.location = event.currentTarget.href
+  const handleSingleClick = async (event, index) => {
     event.preventDefault();
-    setClicked(true);
+    await spliceState(setSelected, selected, index, true)
+    debugger
+    if (clicked[index] && event.currentTarget)
+      window.location = event.currentTarget.href
+    await spliceState(setClicked, clicked, index, true);
+    await setLatestClicked(index);
   }
 
+  const handleDoubleClick = (event) => {
+    event.preventDefault();
+    window.location = event.currentTarget.href;
+  };
 
-  useOutsideClick(listRef, () => setSelected(null));
+  const handleMouseDown = async (event, index) => {
+    event.preventDefault();
+    console.log("mousedown");
+
+    await spliceState(setDragging, dragging, index, true);
+    await spliceState(setOffset, offset, index, {
+      x: event.clientX - position[index].top,
+      y: event.clientY - position[index].left,
+    })
+  };
+
+  const spliceState = async (callback: CallableFunction, state: any, index: number, input: any) => {
+    await callback([
+      ...state.slice(0, index), input,
+      ...state.slice(index + 1)
+    ])
+  }
+
+  const handleMouseMove = async (event, index) => {
+    event.preventDefault();
+    console.log(event)
+    console.log(dragging, event.clientX, event.clientY, position[index].top, position[index].left);
+    if (dragging[index]) {
+      await spliceState(setPosition, position, index, {
+        left: event.clientX - 40,
+        top: event.clientY - 40,
+      })
+    }
+  };
+
+  const handleMouseUp = async (event, index) => {
+    event.preventDefault();
+    console.log('mouseup')
+    await spliceState(setDragging, dragging, index, false)
+  };
+
+
+  useOutsideClick(listRef, () => {
+    selected.forEach((s, index) => {
+      if (s)
+        spliceState(setSelected, selected, index, null)
+    })
+  });
 
   return (
     <Layout>
@@ -97,8 +159,17 @@ const IndexPage = () => {
       <ul className={vcr} >
         {links.map((link, index) => (
 
-          <a key={index} ref={listRef} href={link.url} onClick={(event: MouseEvent) => handleSingleClick(event, index)} className={iconLink}>
-            <Icon key={link.url} selected={selected === index} >
+          <a key={index} ref={listRef} href={link.url}
+            onClick={(event: MouseEvent) => handleSingleClick(event, index)}
+            onDoubleClick={handleDoubleClick}
+            onMouseDown={(event) => handleMouseDown(event, index)}
+            onMouseMove={(event) => handleMouseMove(event, index)}
+            onMouseUp={(event) => handleMouseUp(event, index)}
+            draggable={true}
+            className={iconLink}
+            style={{ top: position[index].top, left: position[index].left }}
+          >
+            <Icon key={link.url} selected={selected[index]} >
               <img src={link.icon} className={icon} />
               <p>{link.text}</p>
             </Icon>

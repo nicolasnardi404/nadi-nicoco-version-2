@@ -1,6 +1,9 @@
 .vcr {
   font-family: 'VCR OSD Mono', sans-serif;
   text-transform: uppercase;
+  user-select: none;
+  height: 100vh;
+  width: 100vw;
 }
 
 .icon {
@@ -12,6 +15,7 @@
 }
 
 .iconLink {
+  position: absolute;
   display: block;
   width: min-content;
 }
