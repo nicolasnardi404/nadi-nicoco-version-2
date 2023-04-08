@@ -3,7 +3,8 @@ import { renderRichText } from 'gatsby-source-contentful/rich-text';
 import { INLINES, BLOCKS, MARKS } from '@contentful/rich-text-types';
 import styled from 'styled-components';
 import "../components/layout.css";
-import { BasicPost } from '../types/music';
+import { VideoArtResponse } from '../types/GraphQLResponses';
+import Layout from '../components/layout';
 
 const options = {
     renderMark: {
@@ -43,20 +44,26 @@ const Hero = styled.div<HeroProps>`
 
 
 
-const Post: React.FC<{ pageContext: { videoart: BasicPost } }> = ({ pageContext }) => {
-    const { videoart } = pageContext;
-    console.log(videoart)
+const Post: React.FC<{ pageContext: { videoArt: VideoArtResponse[] } }> = ({ pageContext }) => {
+    const { videoArt } = pageContext;
+    console.log(videoArt)
 
     function createMarkup(text) {
         return { __html: text };
     }
 
     return (
-        <div>
-            <h1>{videoart.title}</h1>
-            <div dangerouslySetInnerHTML={createMarkup(videoart.embed?.embed)}></div>
-            {videoart.description && renderRichText(videoart.description, options)}
-        </div>
+        <Layout>
+            <div>
+                {videoArt.map((video) => (
+                    <div>
+                        <h1>{video.title}</h1>
+                        <div dangerouslySetInnerHTML={createMarkup(video.embed?.embed)}></div>
+                        {video.description && renderRichText(video.description, options)}
+                    </div>
+                ))}
+            </div>
+        </Layout>
     )
 }
 

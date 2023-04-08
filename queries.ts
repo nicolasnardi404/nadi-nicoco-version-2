@@ -1,22 +1,26 @@
-export const ALL_CONTENTFUL_MUSICS = `{
-  allContentfulMusic {
+export const ALL_CONTENTFUL_XSOUND = `{
+  allContentfulXSound {
     edges {
       node {
         id
         title
-        description {
-          raw
-        }
-        embed {
-          embed
-        }
         cover {
+          url
           file {
             fileName
             contentType
           }
-          url
+          filename
           publicUrl
+        }
+        embed {
+          embed
+        }
+        date
+        locations
+        category
+        description {
+          raw
         }
       }
     }
@@ -27,13 +31,18 @@ export const ALL_CONTENTFUL_VIDEOART = `{
   allContentfulVideoArt {
     edges {
       node {
-        id
         title
-        description {
-          raw
+        location {
+          lat
+          lon
         }
         embed {
           embed
+        }
+        date
+        category
+        description {
+          raw
         }
       }
     }
