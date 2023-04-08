@@ -23,7 +23,6 @@ const options: Options = {
 
 const Category = ({ pageContext }) => {
     const { category, title } = pageContext;
-    console.log(category);
 
     function createMarkup(text) {
         return { __html: text };

@@ -46,7 +46,6 @@ const Hero = styled.div<HeroProps>`
 
 const Post: React.FC<{ pageContext: { videoArt: VideoArtResponse[] } }> = ({ pageContext }) => {
     const { videoArt } = pageContext;
-    console.log(videoArt)
 
     function createMarkup(text) {
         return { __html: text };
