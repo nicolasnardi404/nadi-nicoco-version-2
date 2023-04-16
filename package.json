@@ -8,7 +8,7 @@
     "@contentful/rich-text-html-renderer": "^15.13.1",
     "contentful": "^9.2.13",
     "dotenv": "^16.0.2",
-    "gatsby": "^5.1.0",
+    "gatsby": "^5.7.0",
     "gatsby-omni-font-loader": "^2.0.2",
     "gatsby-plugin-image": "^3.3.2",
     "gatsby-plugin-manifest": "^5.1.0",
