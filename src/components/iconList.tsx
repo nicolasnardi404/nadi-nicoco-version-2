@@ -114,21 +114,23 @@ const IconsList = ({ links }) => {
     return (
         <ul className={vcr} >
             {links.map((link, index) => (
-                <a key={index} ref={listRef} href={link.url}
-                    onClick={(event: MouseEvent) => handleSingleClick(event, index)}
-                    onDoubleClick={handleDoubleClick}
-                    onMouseDown={(event) => handleMouseDown(event, index)}
-                    onMouseMove={(event) => handleMouseMove(event, index)}
-                    onMouseUp={(event) => handleMouseUp(event, index)}
-                    draggable={true}
-                    className={iconLink}
-                    style={{ top: position[index].top, left: position[index].left }}
-                >
-                    <Icon key={link.url} selected={selected[index]} >
-                        <img src={link.icon} className={icon} />
-                        <p>{link.text}</p>
-                    </Icon>
-                </a>
+                <li className={iconLink}
+                    style={{ top: position[index].top, left: position[index].left }}>
+                    <a key={index} ref={listRef} href={link.url}
+                        onClick={(event: MouseEvent) => handleSingleClick(event, index)}
+                        onDoubleClick={handleDoubleClick}
+                        onMouseDown={(event) => handleMouseDown(event, index)}
+                        onMouseMove={(event) => handleMouseMove(event, index)}
+                        onMouseUp={(event) => handleMouseUp(event, index)}
+                        draggable={true}
+
+                    >
+                        <Icon key={link.url} selected={selected[index]} >
+                            <img src={link.icon} className={icon} />
+                            <p>{link.text}</p>
+                        </Icon>
+                    </a>
+                </li>
             ))}
         </ul>
     )
