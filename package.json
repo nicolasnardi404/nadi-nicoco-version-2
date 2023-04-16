@@ -28,7 +28,6 @@
     "@types/react-dom": "^18.0.9",
     "@types/styled-components": "^5.1.26",
     "babel-plugin-styled-components": "^2.0.7",
-    "gatsby-plugin-preload-fonts": "^4.8.0",
     "typescript": "^4.9.3"
   },
   "keywords": [
