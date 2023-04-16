@@ -44,7 +44,6 @@ const Hero = styled.div<HeroProps>`
 
 const Music: React.FC<{ pageContext: { xSound: XSoundResponse[] } }> = ({ pageContext }) => {
     const { xSound } = pageContext;
-    console.log(xSound)
 
     function createMarkup(text) {
         return { __html: text };
