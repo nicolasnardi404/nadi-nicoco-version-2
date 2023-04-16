@@ -10,6 +10,7 @@ module.exports = {
     siteUrl: `https://nadinicoco.com/`,
   },
   plugins: [
+    `gatsby-plugin-preload-fonts`,
     'gatsby-plugin-typescript',
     `gatsby-plugin-image`,
     {
