@@ -9,8 +9,8 @@
     "contentful": "^9.2.13",
     "dotenv": "^16.0.2",
     "gatsby": "^5.1.0",
-    "gatsby-plugin-image": "^3.3.2",
     "gatsby-omni-font-loader": "^2.0.2",
+    "gatsby-plugin-image": "^3.3.2",
     "gatsby-plugin-manifest": "^5.1.0",
     "gatsby-plugin-sharp": "^5.1.0",
     "gatsby-source-contentful": "^8.3.1",
@@ -28,6 +28,7 @@
     "@types/react-dom": "^18.0.9",
     "@types/styled-components": "^5.1.26",
     "babel-plugin-styled-components": "^2.0.7",
+    "gatsby-plugin-preload-fonts": "^4.8.0",
     "typescript": "^4.9.3"
   },
   "keywords": [
@@ -41,7 +42,8 @@
     "start": "gatsby develop",
     "serve": "gatsby serve",
     "clean": "gatsby clean",
-    "test": "echo \"Write tests! -> https://gatsby.dev/unit-testing\" && exit 1"
+    "test": "echo \"Write tests! -> https://gatsby.dev/unit-testing\" && exit 1",
+    "preload-fonts": "gatsby-preload-fonts"
   },
   "repository": {
     "type": "git",
