@@ -1,9 +1,9 @@
 {
-  "name": "gatsby-starter-default",
+  "name": "nicoco",
   "private": true,
-  "description": "A simple starter to get up and developing quickly with Gatsby",
+  "description": "Nicoco's website",
   "version": "0.1.0",
-  "author": "Kyle Mathews <mathews.kyle@gmail.com>",
+  "author": "Micael Sabino",
   "dependencies": {
     "@contentful/rich-text-html-renderer": "^15.13.1",
     "contentful": "^9.2.13",
@@ -31,10 +31,6 @@
     "babel-plugin-styled-components": "^2.0.7",
     "typescript": "^4.9.3"
   },
-  "keywords": [
-    "gatsby"
-  ],
-  "license": "0BSD",
   "scripts": {
     "build": "gatsby build",
     "develop": "gatsby develop",
@@ -44,12 +40,5 @@
     "clean": "gatsby clean",
     "test": "echo \"Write tests! -> https://gatsby.dev/unit-testing\" && exit 1",
     "preload-fonts": "gatsby-preload-fonts"
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/gatsbyjs/gatsby-starter-default"
-  },
-  "bugs": {
-    "url": "https://github.com/gatsbyjs/gatsby/issues"
   }
 }
