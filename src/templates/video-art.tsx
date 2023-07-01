@@ -1,7 +1,6 @@
 import React from 'react';
 import { renderRichText } from 'gatsby-source-contentful/rich-text';
 import { INLINES, BLOCKS, MARKS } from '@contentful/rich-text-types';
-import styled from 'styled-components';
 import "../components/layout.css";
 import { VideoArtResponse } from '../types/GraphQLResponses';
 import Layout from '../components/layout';
@@ -24,25 +23,6 @@ const options = {
         },
     },
 }
-
-interface HeroProps {
-    background: string;
-}
-
-const Hero = styled.div<HeroProps>`
-    background: url(${props => props.background});
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    height: 30vh;
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 4rem;
-`
-
-
 
 const Post: React.FC<{ pageContext: { videoArt: VideoArtResponse[] } }> = ({ pageContext }) => {
     const { videoArt } = pageContext;

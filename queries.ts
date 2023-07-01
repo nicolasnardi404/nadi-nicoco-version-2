@@ -48,3 +48,16 @@ export const ALL_CONTENTFUL_VIDEOART = `{
     }
   }
 }`
+
+export const ALL_CONTENTFUL_POETRY = `{
+  allContentfulPoetry {
+    nodes {
+      poem {
+        raw
+      }
+      date
+      title
+      id
+    }
+  }
+}`

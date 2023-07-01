@@ -10,7 +10,7 @@ export interface File {
 export interface GraphQlResponse {
     errors?: any;
     data?: { allContentfulXSound: { edges: { node: XSoundResponse }[] } } &
-    { allContentfulVideoArt: { edges: { node: VideoArtResponse }[] } }
+    { allContentfulVideoArt: { edges: { node: VideoArtResponse }[] } } & { allContentfulPoetry: { nodes: any[] } };
 }
 
 export interface XSoundResponse {
@@ -31,4 +31,11 @@ export interface VideoArtResponse {
     date: string | null;
     category: string | null;
     description: RenderRichTextData<ContentfulRichTextGatsbyReference>;
+}
+
+export interface PoetryResponse {
+    poem: RenderRichTextData<ContentfulRichTextGatsbyReference>;
+    date: string | null;
+    title: string;
+    id: string;
 }
