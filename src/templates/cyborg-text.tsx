@@ -7,20 +7,26 @@ import styled from "styled-components"
 
 const options = {
   renderMark: {
-    [MARKS.BOLD]: text => <b style={{ fontWeight: 'bold' }}>{text}</b>,
+    [MARKS.BOLD]: text => <b style={{ fontWeight: 'bold', color: '#000' }}>{text}</b>,
   },
   renderNode: {
     [INLINES.HYPERLINK]: (node, children) => {
       const { uri } = node.data
       return (
-        <a href={uri} style={{ color: '#0000EE', textDecoration: 'underline' }}>
+        <a href={uri} style={{ color: '#000', textDecoration: 'underline' }}>
           {children}
         </a>
       )
     },
     [BLOCKS.HEADING_2]: (node, children) => {
-      return <h2 style={{ fontSize: '16px', fontWeight: 'bold', margin: '10px 0' }}>{children}</h2>
+      return <h2 style={{ fontSize: '16px', fontWeight: 'bold', margin: '10px 0', color: '#000' }}>{children}</h2>
     },
+    [BLOCKS.PARAGRAPH]: (node, children) => {
+      return <p style={{ whiteSpace: 'pre-wrap', margin: '0 0 1em 0', color: '#000' }}>{children}</p>
+    },
+    [BLOCKS.TEXT]: text => {
+      return <span style={{ whiteSpace: 'pre-wrap', color: '#000' }}>{text}</span>
+    }
   },
 }
 
@@ -121,9 +127,11 @@ const WindowContent = styled.div`
   background: white;
   height: calc(100% - 18px);
   overflow-y: auto;
-  font-family: 'Times New Roman', serif;
-  font-size: 12px;
-  line-height: 1.4;
+  font-family: 'Courier New', monospace;
+  font-size: 14px;
+  line-height: 1.6;
+  white-space: pre-wrap;
+  color: #000;
 `
 
 // Desktop Icons
@@ -413,7 +421,9 @@ const CyborgText: React.FC<{
                 <small>Date: {poetry.date || 'Unknown'}</small>
               </div>
               <hr style={{ border: '1px inset #c0c0c0', margin: '8px 0' }} />
-              {poetry.poem && renderRichText(poetry.poem, options)}
+              <div style={{ whiteSpace: 'pre-wrap' }}>
+                {poetry.poem && renderRichText(poetry.poem, options)}
+              </div>
             </WindowContent>
           </WindowFrame>
         )

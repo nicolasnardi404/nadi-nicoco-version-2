@@ -18,7 +18,7 @@ const links = [
     icon: "icons/game-icon.png",
   },
   {
-    text: "copy of nadi nicoco",
+    text: "the copy",
     url: "#iwanna",
     icon: "icons/iwannabenadinicoco-icon.png",
   },
@@ -38,7 +38,7 @@ const links = [
     icon: "icons/camera-icon.png",
   },
   {
-    text: "art",
+    text: "video art",
     url: "/x-art",
     icon: "icons/x-art.png",
   },
