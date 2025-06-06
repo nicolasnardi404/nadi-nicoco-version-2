@@ -129,8 +129,8 @@ const WindowContent = styled.div`
 // Desktop Icons
 const DesktopIcon = styled.div`
   position: absolute;
-  width: 64px;
-  height: 64px;
+  width: 80px;
+  height: 90px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -148,24 +148,29 @@ const DesktopIcon = styled.div`
 `
 
 const IconImage = styled.div`
-  width: 32px;
-  height: 32px;
-  background: #c0c0c0;
-  border: 1px solid #808080;
-  margin-bottom: 4px;
+  width:80px;
+  height: 80px;
+  background: transparent;
+
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 16px;
+  
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
 `
 
 const IconLabel = styled.div`
-  font-size: 10px;
+  font-size: 1.5em;
   text-align: center;
   color: white;
   text-shadow: 1px 1px 1px rgba(0,0,0,0.8);
   word-wrap: break-word;
-  max-width: 60px;
+  max-width: 76px;
+  margin-top: -20px;
 `
 
 const CyborgText: React.FC<{
@@ -183,14 +188,33 @@ const CyborgText: React.FC<{
   React.useEffect(() => {
     const defaultPositions: {[key: string]: {x: number, y: number}} = {}
     
-    // Poetry icons
+    // Get usable screen dimensions
+    const maxWidth = window.innerWidth - 100 // Leave space from right edge
+    const maxHeight = window.innerHeight - 100 // Leave space for taskbar
+    
+    // Poetry icons - arranged in a fixed grid
+    const GRID_START_X = 40  // Starting X position
+    const GRID_START_Y = 40  // Starting Y position
+    const ICONS_PER_ROW = 4  // Number of icons per row
+    const HORIZONTAL_SPACING = 200  // Space between icons horizontally
+    const VERTICAL_SPACING = 180    // Space between rows
+    
     cyborgText.forEach((poetry, index) => {
-      defaultPositions[`poetry-${index}`] = { x: 20, y: 20 + (index * 80) }
+      const row = Math.floor(index / ICONS_PER_ROW)
+      const col = index % ICONS_PER_ROW
+      
+      const x = GRID_START_X + (col * HORIZONTAL_SPACING)
+      const y = GRID_START_Y + (row * VERTICAL_SPACING)
+      
+      defaultPositions[`poetry-${index}`] = {
+        x: Math.min(x, maxWidth),
+        y: Math.min(y, maxHeight)
+      }
     })
     
-    // System icons
-    defaultPositions['recycle-bin'] = { x: window.innerWidth - 84, y: 20 }
-    defaultPositions['my-computer'] = { x: window.innerWidth - 84, y: 100 }
+    // System icons - fixed positions on the right side
+    defaultPositions['recycle-bin'] = { x: window.innerWidth - 120, y: 40 }
+    defaultPositions['my-computer'] = { x: window.innerWidth - 120, y: 160 }
     
     setIconPositions(defaultPositions)
   }, [cyborgText])
@@ -313,7 +337,9 @@ const CyborgText: React.FC<{
             onClick={(e) => handleIconClick(e, index)}
             onDoubleClick={(e) => handleIconDoubleClick(e, index)}
           >
-            <IconImage>📝</IconImage>
+            <IconImage>
+              <img src="/icons/folder-icon.png" alt="Folder" />
+            </IconImage>
             <IconLabel>{poetry.title}</IconLabel>
           </DesktopIcon>
         )
@@ -329,7 +355,9 @@ const CyborgText: React.FC<{
         onMouseDown={(e) => handleMouseDown(e, 'recycle-bin')}
         onClick={(e) => handleIconClick(e)}
       >
-        <IconImage>🗑️</IconImage>
+        <IconImage>
+          <img src="/icons/folder-icon.png" alt="Folder" />
+        </IconImage>
         <IconLabel>Recycle Bin</IconLabel>
       </DesktopIcon>
 
@@ -343,7 +371,9 @@ const CyborgText: React.FC<{
         onMouseDown={(e) => handleMouseDown(e, 'my-computer')}
         onClick={(e) => handleIconClick(e)}
       >
-        <IconImage>💻</IconImage>
+        <IconImage>
+          <img src="/icons/folder-icon.png" alt="Folder" />
+        </IconImage>
         <IconLabel>My Computer</IconLabel>
       </DesktopIcon>
 
