@@ -14,8 +14,13 @@ const links = [
   },
   {
     text: "games",
-    url: "#",
+    url: "#games",
     icon: "icons/game-icon.png",
+  },
+  {
+    text: "copy of nadi nicoco",
+    url: "#iwanna",
+    icon: "icons/iwannabenadinicoco-icon.png",
   },
   {
     text: "sound",
@@ -134,12 +139,45 @@ const GameTitle = styled.h3`
   color: #000;
 `;
 
+const RobotButton = styled(GameButton)`
+  background: #c0c0c0;
+  color: #000;
+  font-weight: bold;
+  text-transform: uppercase;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  
+  &:hover {
+    background: #d0d0d0;
+  }
+  
+  &:active {
+    border: 2px solid #000;
+    border-right-color: #fff;
+    border-bottom-color: #fff;
+  }
+`;
+
+const RobotIcon = styled.span`
+  font-size: 20px;
+  margin-right: 8px;
+`;
+
 const IndexPage = () => {
   const [showGameModal, setShowGameModal] = useState(false);
+  const [showIWannaBeModal, setShowIWannaBeModal] = useState(false);
 
   const handleIconClick = (url: string) => {
-    if (url === '#') {
-      setShowGameModal(true);
+    if (url.startsWith('#')) {
+      switch(url) {
+        case '#games':
+          setShowGameModal(true);
+          break;
+        case '#iwanna':
+          setShowIWannaBeModal(true);
+          break;
+      }
     } else {
       window.location.href = url;
     }
@@ -150,20 +188,28 @@ const IndexPage = () => {
     setShowGameModal(false);
   };
 
-  const closeModal = () => {
+  const handleIWannaBe = () => {
+    window.location.href = 'https://iwannabe.nadinicoco.com';
+    setShowIWannaBeModal(false);
+  };
+
+  const closeModals = () => {
     setShowGameModal(false);
+    setShowIWannaBeModal(false);
   };
 
   return (
     <Layout>
       <Seo title="Home" />
       <IconsList links={links} onIconClick={handleIconClick} />
+      
+      {/* Games Modal */}
       {showGameModal && (
-        <ModalOverlay onClick={closeModal}>
+        <ModalOverlay onClick={closeModals}>
           <ModalWindow onClick={(e) => e.stopPropagation()}>
             <ModalTitleBar>
               <span>🎮 Select Game</span>
-              <ModalCloseButton onClick={closeModal}>×</ModalCloseButton>
+              <ModalCloseButton onClick={closeModals}>×</ModalCloseButton>
             </ModalTitleBar>
             <ModalContent>
               <GameTitle>Choose Your Game:</GameTitle>
@@ -177,6 +223,46 @@ const IndexPage = () => {
                 <GameIcon>🍽️</GameIcon>
                 EAT THE RICH
               </GameButton>
+            </ModalContent>
+          </ModalWindow>
+        </ModalOverlay>
+      )}
+
+      {/* I Wanna Be Modal */}
+      {showIWannaBeModal && (
+        <ModalOverlay onClick={closeModals}>
+          <ModalWindow onClick={(e) => e.stopPropagation()}>
+            <ModalTitleBar>
+              <span>🤖 I Wanna Be Nadi Nicoco</span>
+              <ModalCloseButton onClick={closeModals}>×</ModalCloseButton>
+            </ModalTitleBar>
+            <ModalContent>
+              <div style={{
+                textAlign: 'center',
+                marginBottom: '20px',
+                fontFamily: 'MS Sans Serif',
+                fontSize: '12px',
+                lineHeight: '1.5'
+              }}>
+                <p style={{ marginBottom: '16px' }}>
+                  I WANNA BE NADI NICOCO is a robot that feeds on the poetry of nadi nicoco.
+                  It has created its own blog and writes a new poem every day.
+                </p>
+                <img 
+                  src="icons/iwannabenadinicoco-icon.png" 
+                  alt="Robot Icon" 
+                  style={{
+                    width: '64px',
+                    height: '64px',
+                    margin: '16px auto'
+                  }}
+                />
+              </div>
+              
+              <RobotButton onClick={handleIWannaBe}>
+                <RobotIcon>🤖</RobotIcon>
+                VISIT THE ROBOT'S BLOG
+              </RobotButton>
             </ModalContent>
           </ModalWindow>
         </ModalOverlay>

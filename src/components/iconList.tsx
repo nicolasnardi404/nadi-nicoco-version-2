@@ -73,7 +73,7 @@ const IconsList: React.FC<IconsListProps> = ({ links, onIconClick }) => {
         const url = links[index].url;
         
         if (clicked[index]) {
-            if (onIconClick && url === '#') {
+            if (onIconClick && (url.startsWith('#'))) {
                 onIconClick(url);
             } else {
                 window.location.href = url;
@@ -87,7 +87,7 @@ const IconsList: React.FC<IconsListProps> = ({ links, onIconClick }) => {
     const handleDoubleClick = (event) => {
         event.preventDefault();
         const url = event.currentTarget.href;
-        if (onIconClick && url === '#') {
+        if (onIconClick && url.includes('#')) {
             onIconClick(url);
         } else {
             window.location.href = url;
