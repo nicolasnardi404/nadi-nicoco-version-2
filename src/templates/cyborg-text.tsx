@@ -176,6 +176,8 @@ const CyborgText: React.FC<{
   const [selectedIcon, setSelectedIcon] = useState<number | null>(null)
   const [iconPositions, setIconPositions] = useState<{[key: string]: {x: number, y: number}}>({})
   const [dragging, setDragging] = useState<{id: string, offsetX: number, offsetY: number} | null>(null)
+  const [windowPositions, setWindowPositions] = useState<{[key: number]: {x: number, y: number}}>({})
+  const [draggingWindow, setDraggingWindow] = useState<{id: number, offsetX: number, offsetY: number} | null>(null)
 
   // Initialize default positions for icons
   React.useEffect(() => {
@@ -196,6 +198,16 @@ const CyborgText: React.FC<{
   const openWindow = (index: number) => {
     if (!openWindows.includes(index)) {
       setOpenWindows([...openWindows, index])
+      // Set initial window position if not already set
+      if (!windowPositions[index]) {
+        setWindowPositions(prev => ({
+          ...prev,
+          [index]: { 
+            x: 100 + (index * 30), 
+            y: 50 + (index * 30) 
+          }
+        }))
+      }
     }
   }
 
@@ -213,6 +225,19 @@ const CyborgText: React.FC<{
     })
   }
 
+  const handleWindowMouseDown = (e: React.MouseEvent, windowId: number) => {
+    e.preventDefault()
+    e.stopPropagation()
+    const rect = e.currentTarget.closest('[data-window]')?.getBoundingClientRect()
+    if (rect) {
+      setDraggingWindow({
+        id: windowId,
+        offsetX: e.clientX - rect.left,
+        offsetY: e.clientY - rect.top
+      })
+    }
+  }
+
   const handleMouseMove = (e: React.MouseEvent) => {
     if (dragging) {
       const newX = e.clientX - dragging.offsetX
@@ -227,10 +252,25 @@ const CyborgText: React.FC<{
         [dragging.id]: { x: boundedX, y: boundedY }
       }))
     }
+    
+    if (draggingWindow) {
+      const newX = e.clientX - draggingWindow.offsetX
+      const newY = e.clientY - draggingWindow.offsetY
+      
+      // Keep windows within screen bounds (with some padding)
+      const boundedX = Math.max(0, Math.min(window.innerWidth - 400, newX))
+      const boundedY = Math.max(0, Math.min(window.innerHeight - 450, newY)) // Account for taskbar and window height
+      
+      setWindowPositions(prev => ({
+        ...prev,
+        [draggingWindow.id]: { x: boundedX, y: boundedY }
+      }))
+    }
   }
 
   const handleMouseUp = () => {
     setDragging(null)
+    setDraggingWindow(null)
   }
 
   const handleIconClick = (e: React.MouseEvent, index?: number) => {
@@ -310,17 +350,25 @@ const CyborgText: React.FC<{
       {/* Open Windows */}
       {openWindows.map((windowIndex) => {
         const poetry = cyborgText[windowIndex]
+        const windowPosition = windowPositions[windowIndex] || { x: 100 + (windowIndex * 30), y: 50 + (windowIndex * 30) }
+        
         return (
           <WindowFrame
             key={`window-${windowIndex}`}
+            data-window
             style={{
-              top: 50 + (windowIndex * 30),
-              left: 100 + (windowIndex * 30),
+              top: windowPosition.y,
+              left: windowPosition.x,
               width: '600px',
               height: '400px'
             }}
           >
-            <TitleBar>
+            <TitleBar
+              onMouseDown={(e) => handleWindowMouseDown(e, windowIndex)}
+              style={{
+                cursor: draggingWindow?.id === windowIndex ? 'grabbing' : 'move'
+              }}
+            >
               <span>📝 {poetry.title} - Notepad</span>
               <WindowControls>
                 <WindowButton>_</WindowButton>

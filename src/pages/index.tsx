@@ -19,12 +19,12 @@ const links = [
   //   icon: "icons/art-map.png"
   // },
   {
-    text: "x-sound",
+    text: "sound",
     url: "/x-sound",
     icon: "icons/x-sound.png",
   },
   {
-    text: "x-art",
+    text: "art",
     url: "/x-art",
     icon: "icons/x-art.png",
   },
