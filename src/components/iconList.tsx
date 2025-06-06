@@ -3,7 +3,11 @@ import { useState, MouseEvent, useEffect, useRef } from "react";
 import { icon, iconLink, vcr } from "./index.module.css"
 import styled from 'styled-components';
 
-const Icon = styled.li`
+interface IconProps {
+  selected: boolean;
+}
+
+const Icon = styled.li<IconProps>`
   display: flex;
   text-align: center;
   width: 88px;
@@ -31,8 +35,8 @@ const useOutsideClick = (ref, callback) => {
         };
     });
 }
+
 const randomNum = (max: number, min?: number) => Math.floor(Math.random() * max) + (min || 0);
-let initializing = true
 
 interface IconsListProps {
   links: {
@@ -41,9 +45,10 @@ interface IconsListProps {
     icon: string;
   }[];
   onIconClick?: (url: string) => void;
+  isOrganized?: boolean;
 }
 
-const IconsList: React.FC<IconsListProps> = ({ links, onIconClick }) => {
+const IconsList: React.FC<IconsListProps> = ({ links, onIconClick, isOrganized = false }) => {
     const [selected, setSelected] = useState(links.map(l => null));
     const listRef = useRef(null);
     const [clicked, setClicked] = useState(links.map(l => false));
@@ -53,11 +58,31 @@ const IconsList: React.FC<IconsListProps> = ({ links, onIconClick }) => {
     const [latestClicked, setLatestClicked] = useState(null);
 
     useEffect(() => {
-        if (initializing)
-            setPosition(links.map(l => ({ top: randomNum(window.innerHeight - 240, 142), left: randomNum(window.innerWidth - 120) })))
-        initializing = false
-    })
+        if (isOrganized) {
+            // Organize icons in a grid layout
+            const GRID_START_X = 40;
+            const GRID_START_Y = 40;
+            const ICONS_PER_ROW = 4;
+            const HORIZONTAL_SPACING = 120;
+            const VERTICAL_SPACING = 120;
 
+            const newPositions = links.map((_, index) => {
+                const row = Math.floor(index / ICONS_PER_ROW);
+                const col = index % ICONS_PER_ROW;
+                return {
+                    top: GRID_START_Y + (row * VERTICAL_SPACING),
+                    left: GRID_START_X + (col * HORIZONTAL_SPACING)
+                };
+            });
+            setPosition(newPositions);
+        } else {
+            // Random positions
+            setPosition(links.map(l => ({
+                top: randomNum(window.innerHeight - 240, 142),
+                left: randomNum(window.innerWidth - 120)
+            })));
+        }
+    }, [isOrganized, links.length]);
 
     useEffect(() => {
         let timer;
@@ -65,7 +90,6 @@ const IconsList: React.FC<IconsListProps> = ({ links, onIconClick }) => {
             timer = setTimeout(() => { spliceState(setClicked, clicked, latestClicked, false) }, 300);
         return () => clearTimeout(timer);
     }, [clicked]);
-
 
     const handleSingleClick = async (event, index) => {
         event.preventDefault();
@@ -96,66 +120,65 @@ const IconsList: React.FC<IconsListProps> = ({ links, onIconClick }) => {
 
     const handleMouseDown = async (event, index) => {
         event.preventDefault();
-
         await spliceState(setDragging, dragging, index, true);
         await spliceState(setOffset, offset, index, {
-            x: event.clientX - position[index].top,
-            y: event.clientY - position[index].left,
-        })
+            x: event.clientX - position[index].left,
+            y: event.clientY - position[index].top,
+        });
     };
 
     const spliceState = async (callback: CallableFunction, state: any, index: number, input: any) => {
         await callback([
-            ...state.slice(0, index), input,
+            ...state.slice(0, index),
+            input,
             ...state.slice(index + 1)
-        ])
-    }
+        ]);
+    };
 
     const handleMouseMove = async (event, index) => {
         event.preventDefault();
         if (dragging[index]) {
             await spliceState(setPosition, position, index, {
-                left: event.clientX - 40,
-                top: event.clientY - 40,
-            })
+                left: event.clientX - offset[index].x,
+                top: event.clientY - offset[index].y,
+            });
         }
     };
 
     const handleMouseUp = async (event, index) => {
         event.preventDefault();
-        await spliceState(setDragging, dragging, index, false)
+        await spliceState(setDragging, dragging, index, false);
     };
 
     useOutsideClick(listRef, () => {
         selected.forEach((s, index) => {
             if (s)
-                spliceState(setSelected, selected, index, null)
-        })
+                spliceState(setSelected, selected, index, null);
+        });
     });
 
     return (
-        <ul className={vcr} >
+        <ul className={vcr}>
             {links.map((link, index) => (
-                <li className={iconLink}
+                <li key={link.url} className={iconLink}
                     style={{ top: position[index].top, left: position[index].left }}>
-                    <a key={index} ref={listRef} href={link.url}
+                    <a ref={listRef} href={link.url}
                         onClick={(event: MouseEvent) => handleSingleClick(event, index)}
                         onDoubleClick={handleDoubleClick}
                         onMouseDown={(event) => handleMouseDown(event, index)}
                         onMouseMove={(event) => handleMouseMove(event, index)}
                         onMouseUp={(event) => handleMouseUp(event, index)}
                         draggable={true}
-
                     >
-                        <Icon key={link.url} selected={selected[index]} >
-                            <img src={link.icon} className={icon} />
+                        <Icon selected={selected[index]}>
+                            <img src={link.icon} className={icon} alt={link.text} />
                             <p>{link.text}</p>
                         </Icon>
                     </a>
                 </li>
             ))}
         </ul>
-    )
-}
+    );
+};
 
-export default IconsList
+export default IconsList;

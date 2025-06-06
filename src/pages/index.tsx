@@ -169,10 +169,64 @@ const RobotIcon = styled.span`
   margin-right: 8px;
 `;
 
+const OrganizeButton = styled.button`
+  position: fixed;
+  bottom: 40px;
+  right: 40px;
+  background: #c0c0c0;
+  border: 2px solid #fff;
+  border-right-color: #000;
+  border-bottom-color: #000;
+  padding: 12px 24px;
+  font-family: 'MS Sans Serif', sans-serif;
+  font-size: 14px;
+  font-weight: bold;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  z-index: 9999;
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+  
+  &:active {
+    border: 2px solid #000;
+    border-right-color: #fff;
+    border-bottom-color: #fff;
+    padding-top: 13px;
+    padding-left: 25px;
+    padding-bottom: 11px;
+    padding-right: 23px;
+  }
+
+  &:hover {
+    background: #d0d0d0;
+  }
+`;
+
+const IconsContainer = styled.div<{ isOrganized: boolean }>`
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 20px;
+  padding: 20px;
+  padding-bottom: 100px;
+  transition: all 0.3s ease;
+  
+  ${props => props.isOrganized ? `
+    max-width: 800px;
+    margin: 0 auto;
+    grid-template-columns: repeat(4, 1fr);
+  ` : ''}
+`
+
 const IndexPage = () => {
   const [showGameModal, setShowGameModal] = useState(false);
   const [showIWannaBeModal, setShowIWannaBeModal] = useState(false);
   const [showWebsitesModal, setShowWebsitesModal] = useState(false);
+  const [isOrganized, setIsOrganized] = useState(true);
+
+  const handleOrganize = () => {
+    setIsOrganized(!isOrganized);
+  };
 
   const handleIconClick = (url: string) => {
     if (url.startsWith('#')) {
@@ -216,8 +270,18 @@ const IndexPage = () => {
   return (
     <Layout>
       <Seo title="Home" />
-      <IconsList links={links} onIconClick={handleIconClick} />
+      <IconsContainer isOrganized={isOrganized}>
+        <IconsList 
+          links={links} 
+          onIconClick={handleIconClick}
+          isOrganized={isOrganized}
+        />
+      </IconsContainer>
       
+      <OrganizeButton onClick={handleOrganize}>
+        {isOrganized ? '🎲 Randomize Icons' : '📋 Organize Icons'}
+      </OrganizeButton>
+
       {/* Games Modal */}
       {showGameModal && (
         <ModalOverlay onClick={closeModals}>

@@ -28,9 +28,8 @@ const Layout = ({ children }) => {
       <Header siteTitle={data.site.siteMetadata?.title || `Title`} />
       <div
         style={{
-          margin: `0 auto`,
-          maxWidth: `var(--size-content)`,
-          padding: `var(--size-gutter)`,
+          position: 'relative',
+          minHeight: '100vh',
         }}
       >
         <main>{children}</main>
@@ -38,6 +37,8 @@ const Layout = ({ children }) => {
           style={{
             marginTop: `var(--space-5)`,
             fontSize: `var(--font-sm)`,
+            textAlign: 'center',
+            padding: '20px',
           }}
         >
           ©
