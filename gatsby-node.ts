@@ -1,7 +1,7 @@
 import { GatsbyNode } from "gatsby";
 import path from "path";
-import { ALL_CONTENTFUL_XSOUND, ALL_CONTENTFUL_VIDEOART, ALL_CONTENTFUL_POETRY } from "./queries";
-import { GraphQlResponse, VideoArtResponse, XSoundResponse } from "./src/types/GraphQLResponses";
+import { ALL_CONTENTFUL_XSOUND, ALL_CONTENTFUL_VIDEOART, ALL_CONTENTFUL_POETRY, ALL_CONTENTFUL_SHORT_MOVIES } from "./queries";
+import { GraphQlResponse, VideoArtResponse, XSoundResponse, ShortMovieResponse } from "./src/types/GraphQLResponses";
 import { create } from "domain";
 
 const CATEGORIES = ["x-sound", "x-art", "cyborg-text"].slice(0, 2);
@@ -13,11 +13,13 @@ export const createPages: GatsbyNode['createPages'] = async ({ graphql, actions 
   const xSoundResults: GraphQlResponse = await graphql(ALL_CONTENTFUL_XSOUND);
   const videoArtResults: GraphQlResponse = await graphql(ALL_CONTENTFUL_VIDEOART);
   const cyborgTextResults: GraphQlResponse = await graphql(ALL_CONTENTFUL_POETRY);
+  const shortMoviesResults: GraphQlResponse = await graphql(ALL_CONTENTFUL_SHORT_MOVIES);
 
   console.log(`Got ${xSoundResults?.data?.allContentfulXSound?.edges.length} music results.`)
   console.log(`Got ${videoArtResults?.data?.allContentfulVideoArt?.edges.length} video art results.`)
+  console.log(`Got ${shortMoviesResults?.data?.allContentfulShortMovies?.edges.length} short movies results.`);
 
-  const { xSound, videoArt, cyborgText } = {
+  const { xSound, videoArt, cyborgText, shortMovies } = {
     xSound: (xSoundResults?.data?.allContentfulXSound.edges.map(({ node }) => node) || []) as XSoundResponse[],
     videoArt: (videoArtResults?.data?.allContentfulVideoArt.edges.map(({ node }) => node) || []) as VideoArtResponse[],
     cyborgText: (cyborgTextResults?.data?.allContentfulPoetry?.nodes || [])
@@ -59,4 +61,11 @@ export const createPages: GatsbyNode['createPages'] = async ({ graphql, actions 
     path: `/text-me`,
     component: textMeTemplate,
   })
+
+  const moviesTemplate = path.resolve(`./src/templates/movies.tsx`);
+  createPage({
+    path: `/movies`,
+    component: moviesTemplate,
+    context: { shortMovies }
+  });
 }

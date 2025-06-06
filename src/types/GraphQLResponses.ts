@@ -39,3 +39,11 @@ export interface PoetryResponse {
     title: string;
     id: string;
 }
+
+export interface ShortMovieResponse {
+    title: string;
+    description?: {
+        raw: string;
+    };
+    link: string;
+}

@@ -61,3 +61,19 @@ export const ALL_CONTENTFUL_POETRY = `{
     }
   }
 }`
+
+export const ALL_CONTENTFUL_SHORT_MOVIES = `
+  query GetAllShortMovies {
+    allContentfulShortMovies {
+      edges {
+        node {
+          title
+          description {
+            raw
+          }
+          link
+        }
+      }
+    }
+  }
+`;

@@ -23,6 +23,11 @@ const links = [
     icon: "icons/x-sound.png",
   },
   {
+    text: "movies",
+    url: "/movies",
+    icon: "icons/camera-icon.png",
+  },
+  {
     text: "art",
     url: "/x-art",
     icon: "icons/x-art.png",
