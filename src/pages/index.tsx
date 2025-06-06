@@ -218,11 +218,100 @@ const IconsContainer = styled.div<{ isOrganized: boolean }>`
   ` : ''}
 `
 
+const Taskbar = styled.div`
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 30px;
+  background: #c0c0c0;
+  border-top: 2px solid #fff;
+  display: flex;
+  align-items: center;
+  padding: 0 2px;
+  z-index: 9999;
+`;
+
+const StartButton = styled.button`
+  height: 26px;
+  padding: 0 8px;
+  background: #c0c0c0;
+  border: 2px solid #fff;
+  border-right-color: #000;
+  border-bottom-color: #000;
+  font-family: 'MS Sans Serif', sans-serif;
+  font-size: 12px;
+  font-weight: bold;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  
+  &:active {
+    border: 2px solid #000;
+    border-right-color: #fff;
+    border-bottom-color: #fff;
+    padding-top: 1px;
+    padding-left: 9px;
+  }
+`;
+
+const StartMenu = styled.div<{ isOpen: boolean }>`
+  position: fixed;
+  bottom: 30px;
+  left: 0;
+  width: 220px;
+  background: #c0c0c0;
+  border: 2px solid #fff;
+  border-right-color: #000;
+  border-bottom-color: #000;
+  display: ${props => props.isOpen ? 'block' : 'none'};
+  z-index: 9999;
+`;
+
+const MenuItem = styled.a`
+  display: flex;
+  align-items: center;
+  text-align: center
+  padding: 6px 12px;
+  text-decoration: none;
+  color: #000;
+  font-family: 'MS Sans Serif', sans-serif;
+  font-size: 12px;
+  gap: 12px;
+  min-height: 32px;
+  
+  &:hover {
+    background: #000080;
+    color: #fff;
+  }
+
+  img {
+    width: 32px;
+    height: 32px;
+    object-fit: contain;
+    flex-shrink: 0;
+    margin: auto 0;
+  }
+
+  span {
+    line-height: 16px;
+    text-transform: capitalize;
+  }
+`;
+
+const MenuDivider = styled.div`
+  height: 1px;
+  background: #808080;
+  margin: 4px 0;
+`;
+
 const IndexPage = () => {
   const [showGameModal, setShowGameModal] = useState(false);
   const [showIWannaBeModal, setShowIWannaBeModal] = useState(false);
   const [showWebsitesModal, setShowWebsitesModal] = useState(false);
   const [isOrganized, setIsOrganized] = useState(true);
+  const [isStartMenuOpen, setIsStartMenuOpen] = useState(false);
 
   const handleOrganize = () => {
     setIsOrganized(!isOrganized);
@@ -267,6 +356,19 @@ const IndexPage = () => {
     setShowWebsitesModal(false);
   };
 
+  const handleStartClick = () => {
+    setIsStartMenuOpen(!isStartMenuOpen);
+  };
+
+  const handleMenuItemClick = (url: string) => {
+    setIsStartMenuOpen(false);
+    if (url.startsWith('#')) {
+      handleIconClick(url);
+    } else {
+      window.location.href = url;
+    }
+  };
+
   return (
     <Layout>
       <Seo title="Home" />
@@ -281,6 +383,41 @@ const IndexPage = () => {
       <OrganizeButton onClick={handleOrganize}>
         {isOrganized ? '🎲 Randomize Icons' : '📋 Organize Icons'}
       </OrganizeButton>
+
+      {/* Start Menu */}
+      <Taskbar>
+        <StartButton onClick={handleStartClick}>
+          <span>🪟</span> Start
+        </StartButton>
+      </Taskbar>
+      
+      <StartMenu isOpen={isStartMenuOpen}>
+        {links.map((link) => (
+          <MenuItem 
+            key={link.url}
+            href={link.url}
+            onClick={(e) => {
+              e.preventDefault();
+              handleMenuItemClick(link.url);
+            }}
+          >
+            <img src={link.icon} alt={link.text} />
+            <span>{link.text}</span>
+          </MenuItem>
+        ))}
+        <MenuDivider />
+        <MenuItem 
+          href="#"
+          onClick={(e) => {
+            e.preventDefault();
+            handleOrganize();
+            setIsStartMenuOpen(false);
+          }}
+        >
+          <span style={{ fontSize: '16px' }}>{isOrganized ? '🎲' : '📋'}</span>
+          <span>{isOrganized ? 'Randomize Icons' : 'Organize Icons'}</span>
+        </MenuItem>
+      </StartMenu>
 
       {/* Games Modal */}
       {showGameModal && (
