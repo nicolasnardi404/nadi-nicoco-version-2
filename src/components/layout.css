@@ -44,6 +44,12 @@ body {
   font-weight: normal;
   margin: 0;
   word-wrap: break-word;
+  background-image: url('../images/windows-background.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  min-height: 100vh;
 }
 
 a {
