@@ -23,6 +23,11 @@ const links = [
     icon: "icons/iwannabenadinicoco-icon.png",
   },
   {
+    text: "websites",
+    url: "#websites",
+    icon: "icons/internet-icon.png",
+  },
+  {
     text: "sound",
     url: "/x-sound",
     icon: "icons/x-sound.png",
@@ -167,6 +172,7 @@ const RobotIcon = styled.span`
 const IndexPage = () => {
   const [showGameModal, setShowGameModal] = useState(false);
   const [showIWannaBeModal, setShowIWannaBeModal] = useState(false);
+  const [showWebsitesModal, setShowWebsitesModal] = useState(false);
 
   const handleIconClick = (url: string) => {
     if (url.startsWith('#')) {
@@ -176,6 +182,9 @@ const IndexPage = () => {
           break;
         case '#iwanna':
           setShowIWannaBeModal(true);
+          break;
+        case '#websites':
+          setShowWebsitesModal(true);
           break;
       }
     } else {
@@ -193,9 +202,15 @@ const IndexPage = () => {
     setShowIWannaBeModal(false);
   };
 
+  const handleWebsiteSelection = (websiteUrl: string) => {
+    window.location.href = websiteUrl;
+    setShowWebsitesModal(false);
+  };
+
   const closeModals = () => {
     setShowGameModal(false);
     setShowIWannaBeModal(false);
+    setShowWebsitesModal(false);
   };
 
   return (
@@ -263,6 +278,36 @@ const IndexPage = () => {
                 <RobotIcon>🤖</RobotIcon>
                 VISIT THE ROBOT'S BLOG
               </RobotButton>
+            </ModalContent>
+          </ModalWindow>
+        </ModalOverlay>
+      )}
+
+      {/* Websites Modal */}
+      {showWebsitesModal && (
+        <ModalOverlay onClick={closeModals}>
+          <ModalWindow onClick={(e) => e.stopPropagation()}>
+            <ModalTitleBar>
+              <span>🌐 My Websites</span>
+              <ModalCloseButton onClick={closeModals}>×</ModalCloseButton>
+            </ModalTitleBar>
+            <ModalContent>
+              <GameTitle>Visit My Websites:</GameTitle>
+              
+              <GameButton onClick={() => handleWebsiteSelection('https://cutethingsonline.com')}>
+                <GameIcon>🌸</GameIcon>
+                CUTE THINGS ONLINE
+              </GameButton>
+              
+              <GameButton onClick={() => handleWebsiteSelection('https://randomrainbow.art')}>
+                <GameIcon>🌈</GameIcon>
+                RANDOM RAINBOW
+              </GameButton>
+
+              <GameButton onClick={() => handleWebsiteSelection('https://quartoambiente.com.br')}>
+                <GameIcon>🏠</GameIcon>
+                QUARTO AMBIENTE
+              </GameButton>
             </ModalContent>
           </ModalWindow>
         </ModalOverlay>
