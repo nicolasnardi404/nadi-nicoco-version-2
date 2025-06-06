@@ -34,7 +34,16 @@ const useOutsideClick = (ref, callback) => {
 const randomNum = (max: number, min?: number) => Math.floor(Math.random() * max) + (min || 0);
 let initializing = true
 
-const IconsList = ({ links }) => {
+interface IconsListProps {
+  links: {
+    text: string;
+    url: string;
+    icon: string;
+  }[];
+  onIconClick?: (url: string) => void;
+}
+
+const IconsList: React.FC<IconsListProps> = ({ links, onIconClick }) => {
     const [selected, setSelected] = useState(links.map(l => null));
     const listRef = useRef(null);
     const [clicked, setClicked] = useState(links.map(l => false));
@@ -60,16 +69,29 @@ const IconsList = ({ links }) => {
 
     const handleSingleClick = async (event, index) => {
         event.preventDefault();
-        await spliceState(setSelected, selected, index, true)
-        if (clicked[index] && event.currentTarget)
-            window.location = event.currentTarget.href
+        await spliceState(setSelected, selected, index, true);
+        const url = links[index].url;
+        
+        if (clicked[index]) {
+            if (onIconClick && url === '#') {
+                onIconClick(url);
+            } else {
+                window.location.href = url;
+            }
+        }
+        
         await spliceState(setClicked, clicked, index, true);
         await setLatestClicked(index);
-    }
+    };
 
     const handleDoubleClick = (event) => {
         event.preventDefault();
-        window.location = event.currentTarget.href;
+        const url = event.currentTarget.href;
+        if (onIconClick && url === '#') {
+            onIconClick(url);
+        } else {
+            window.location.href = url;
+        }
     };
 
     const handleMouseDown = async (event, index) => {
