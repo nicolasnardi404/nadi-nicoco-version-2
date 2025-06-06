@@ -8,9 +8,9 @@ import IconsList from "../components/iconList"
 
 const links = [
   {
-    text: "text me",
+    text: "about",
     url: "/text-me",
-    icon: "icons/text-me.png",
+    icon: "icons/smile-icon.png",
   },
   {
     text: "games",

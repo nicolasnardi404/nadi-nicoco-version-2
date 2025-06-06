@@ -37,7 +37,6 @@ const Desktop = styled.div`
   left: 0;
   width: 100vw;
   height: 100vh;
-  background: #008080;
   font-family: 'MS Sans Serif', sans-serif;
   font-size: 11px;
   overflow: hidden;
