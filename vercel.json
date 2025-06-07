@@ -1,0 +1,16 @@
+{
+  "version": 2,
+  "builds": [
+    {
+      "src": "package.json",
+      "use": "@vercel/static-build",
+      "config": {
+        "installCommand": "yarn install",
+        "buildCommand": "SHARP_IGNORE_GLOBAL_LIBVIPS=1 yarn build"
+      }
+    }
+  ],
+  "env": {
+    "SHARP_IGNORE_GLOBAL_LIBVIPS": "1"
+  }
+} 
