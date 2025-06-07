@@ -16,7 +16,7 @@ const shake = keyframes`
   100% { transform: translate(0, 0); }
 `;
 
-const AdWindow = styled.div<{ x: number; y: number; isDragging: boolean }>`
+const AdWindow = styled.div<{ x: number; y: number; isDragging: boolean; zIndex: number }>`
   position: fixed;
   top: ${props => props.y}px;
   left: ${props => props.x}px;
@@ -26,7 +26,7 @@ const AdWindow = styled.div<{ x: number; y: number; isDragging: boolean }>`
   border-right-color: #000;
   border-bottom-color: #000;
   font-family: 'MS Sans Serif', sans-serif;
-  z-index: ${props => props.isDragging ? 10000 : 9998};
+  z-index: ${props => props.zIndex};
   box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.3);
   user-select: none;
   transition: ${props => props.isDragging ? 'none' : 'all 0.1s ease'};
@@ -290,58 +290,96 @@ interface RetroAdsProps {}
 
 const RetroAds: React.FC<RetroAdsProps> = () => {
   const [visibleAds, setVisibleAds] = useState<number[]>([]);
+  const [shownAds, setShownAds] = useState<Set<number>>(new Set());
   const [positions, setPositions] = useState<{[key: number]: {x: number, y: number}}>({});
   const [draggingAd, setDraggingAd] = useState<number | null>(null);
   const [dragOffset, setDragOffset] = useState<{x: number, y: number}>({ x: 0, y: 0 });
-  const dragRef = useRef<{
-    lastX: number;
-    lastY: number;
-  }>({ lastX: 0, lastY: 0 });
+  const [zIndexes, setZIndexes] = useState<{[key: number]: number}>({});
+  const baseZIndex = 1000;
+  const maxZIndex = 2000;
+  const dragRef = useRef<{lastX: number; lastY: number}>({ lastX: 0, lastY: 0 });
 
   const showRandomAd = useCallback(() => {
-    // Get all ads that aren't currently visible
-    const hiddenAds = ads.filter(ad => !visibleAds.includes(ad.id));
+    // Get all ads that haven't been shown yet
+    const availableAds = ads.filter(ad => !shownAds.has(ad.id));
     
-    if (hiddenAds.length > 0) {
-      // Pick a random ad from hidden ones
-      const randomAd = hiddenAds[Math.floor(Math.random() * hiddenAds.length)];
+    if (availableAds.length > 0) {
+      // Pick a random ad from available ones
+      const randomAd = availableAds[Math.floor(Math.random() * availableAds.length)];
       
-      // Calculate random position that ensures the ad is fully visible
+      // Calculate random position
       const x = Math.random() * (window.innerWidth - 400);
       const y = Math.random() * (window.innerHeight - 300);
       
+      // Update visible ads and shown ads
       setVisibleAds(prev => [...prev, randomAd.id]);
+      setShownAds(prev => new Set([...prev, randomAd.id]));
       setPositions(prev => ({
         ...prev,
         [randomAd.id]: { x, y }
       }));
+      
+      // Set highest z-index for new ad
+      const newZIndex = Math.max(...Object.values(zIndexes), baseZIndex) + 1;
+      setZIndexes(prev => ({
+        ...prev,
+        [randomAd.id]: newZIndex
+      }));
     }
-  }, [visibleAds]);
+  }, [shownAds, zIndexes]);
 
   useEffect(() => {
     // Show first ad after 5 seconds
     const initialTimer = setTimeout(() => {
       showRandomAd();
-    }, 10000);
+    }, 5000);
 
-    // Show subsequent ads randomly between 30-90 seconds
+    // Show subsequent ads every 15 seconds until all ads are shown
     const intervalTimer = setInterval(() => {
-      if (Math.random() < 0.7) { // 70% chance to show an ad when the interval hits
+      if (shownAds.size < ads.length) {
         showRandomAd();
       }
-    }, 30000 + Math.random() * 60000); // Random interval between 30-90 seconds
+    }, 15000);
 
     return () => {
       clearTimeout(initialTimer);
       clearInterval(intervalTimer);
     };
-  }, [showRandomAd]);
+  }, [showRandomAd, shownAds]);
 
   const handleClose = (adId: number) => {
     setVisibleAds(prev => prev.filter(id => id !== adId));
   };
 
+  const bringToFront = (adId: number) => {
+    const currentHighest = Math.max(...Object.values(zIndexes), baseZIndex);
+    const newZIndex = currentHighest >= maxZIndex ? baseZIndex : currentHighest + 1;
+    
+    if (currentHighest >= maxZIndex) {
+      const sortedAds = Object.entries(zIndexes)
+        .sort(([, a], [, b]) => a - b)
+        .map(([id]) => parseInt(id));
+      
+      const newIndexes = sortedAds.reduce((acc, id, index) => ({
+        ...acc,
+        [id]: baseZIndex + index
+      }), {});
+      
+      setZIndexes({
+        ...newIndexes,
+        [adId]: baseZIndex + sortedAds.length
+      });
+    } else {
+      setZIndexes(prev => ({
+        ...prev,
+        [adId]: newZIndex
+      }));
+    }
+  };
+
   const handleMouseDown = (e: React.MouseEvent, adId: number) => {
+    if (e.target instanceof HTMLButtonElement) return; // Don't drag when clicking close button
+    
     e.preventDefault();
     const rect = e.currentTarget.getBoundingClientRect();
     const offsetX = e.clientX - rect.left;
@@ -354,8 +392,7 @@ const RetroAds: React.FC<RetroAdsProps> = () => {
       lastY: e.clientY
     };
 
-    // Bring the window to front by moving it to the end of the array
-    setVisibleAds(prev => [...prev.filter(id => id !== adId), adId]);
+    bringToFront(adId);
   };
 
   const handleMouseMove = useCallback((e: MouseEvent) => {
@@ -408,6 +445,7 @@ const RetroAds: React.FC<RetroAdsProps> = () => {
           x={positions[ad.id]?.x || ad.x}
           y={positions[ad.id]?.y || ad.y}
           isDragging={draggingAd === ad.id}
+          zIndex={zIndexes[ad.id] || baseZIndex}
         >
           <TitleBar
             onMouseDown={(e) => handleMouseDown(e, ad.id)}
