@@ -70,6 +70,10 @@ const OrganizeButton = styled.button`
   z-index: 9999;
   box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
   
+  @media (max-width: 768px) {
+    display: none;
+  }
+  
   &:active {
     border: 2px solid #000;
     border-right-color: #fff;
@@ -98,7 +102,22 @@ const IconsContainer = styled.div<{ isOrganized: boolean }>`
     margin: 0 auto;
     grid-template-columns: repeat(4, 1fr);
   ` : ''}
+
+  @media (max-width: 768px) {
+    display: block;
+    padding: 16px;
+    margin: 0;
+    max-width: none;
+  }
 `
+
+const MobileContainer = styled.div`
+  @media (max-width: 768px) {
+    padding-top: env(safe-area-inset-top);
+    padding-bottom: env(safe-area-inset-bottom);
+    min-height: 100vh;
+  }
+`;
 
 const IndexPage: React.FC<PageProps> = () => {
   const [isOrganized, setIsOrganized] = useState(true);
@@ -109,9 +128,8 @@ const IndexPage: React.FC<PageProps> = () => {
 
   const handleIconClick = (url: string) => {
     if (url.startsWith('#')) {
-      // Handle special cases like games, websites, etc.
       const hash = url.substring(1);
-      // Emit a custom event that the Modals component will listen to
+      // Restore modal handling
       window.dispatchEvent(new CustomEvent('startMenuAction', { 
         detail: { action: hash } 
       }));
@@ -131,6 +149,7 @@ const IndexPage: React.FC<PageProps> = () => {
         />
       </IconsContainer>
       
+      {/* Only show organize button on desktop */}
       <OrganizeButton onClick={handleOrganize}>
         {isOrganized ? '🎲 Randomize Icons' : '📋 Organize Icons'}
       </OrganizeButton>

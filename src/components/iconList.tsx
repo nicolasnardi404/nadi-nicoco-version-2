@@ -20,10 +20,38 @@ const Icon = styled.li<IconProps>`
     border: 2px dashed rgba(100, 200, 200, 0.9)
   `}
 
+  @media (max-width: 768px) {
+    width: 100%;
+    max-width: none;
+    flex-direction: row;
+    justify-content: flex-start;
+    gap: 15px;
+    padding: 12px 16px;
+    margin: 0;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 12px;
+    transition: transform 0.2s ease;
+    
+    &:active {
+      transform: scale(0.98);
+    }
+    
+    ${({ selected }) =>
+      selected &&
+      `
+      background: rgba(255, 255, 255, 0.1);
+    `}
+  }
+
   img {
     width: 84px;
     height: 84px;
     object-fit: contain;
+
+    @media (max-width: 768px) {
+      width: 32px;
+      height: 32px;
+    }
   }
 
   p {
@@ -31,6 +59,44 @@ const Icon = styled.li<IconProps>`
     text-align: center;
     word-wrap: break-word;
     width: 100%;
+
+    @media (max-width: 768px) {
+      text-align: left;
+      font-size: 16px;
+      margin: 0;
+    }
+  }
+`;
+
+const IconList = styled.ul`
+  &.${vcr} {
+    @media (max-width: 768px) {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      padding: 16px;
+      width: 100%;
+      max-width: 100%;
+      margin: 0;
+    }
+  }
+`;
+
+const IconListItem = styled.li`
+  position: absolute;
+  
+  @media (max-width: 768px) {
+    position: relative !important;
+    top: auto !important;
+    left: auto !important;
+    width: 100%;
+  }
+`;
+
+const IconLink = styled.a`
+  @media (max-width: 768px) {
+    width: 100%;
+    display: block;
   }
 `;
 
@@ -69,6 +135,9 @@ const IconsList: React.FC<IconsListProps> = ({ links, onIconClick, isOrganized =
     const [offset, setOffset] = useState(links.map(l => ({ x: 0, y: 0 })));
     const [latestClicked, setLatestClicked] = useState(null);
 
+    // For mobile, we don't need dragging functionality
+    const isMobile = typeof window !== 'undefined' && window.matchMedia('(max-width: 768px)').matches;
+    
     useEffect(() => {
         if (isOrganized) {
             // Organize icons in a grid layout
@@ -103,30 +172,34 @@ const IconsList: React.FC<IconsListProps> = ({ links, onIconClick, isOrganized =
         return () => clearTimeout(timer);
     }, [clicked]);
 
-    const handleSingleClick = async (event, index) => {
+    const handleClick = async (event: MouseEvent, index: number, url: string) => {
         event.preventDefault();
-        await spliceState(setSelected, selected, index, true);
-        const url = links[index].url;
         
-        if (clicked[index]) {
-            if (onIconClick && (url.startsWith('#'))) {
+        // On mobile, trigger click immediately
+        if (isMobile) {
+            if (onIconClick) {
                 onIconClick(url);
-            } else {
-                window.location.href = url;
+            }
+            return;
+        }
+
+        // On desktop, keep the original behavior
+        await spliceState(setSelected, selected, index, true);
+        if (clicked[index]) {
+            if (onIconClick) {
+                onIconClick(url);
             }
         }
-        
         await spliceState(setClicked, clicked, index, true);
         await setLatestClicked(index);
     };
 
+    // Keep other handlers for desktop
     const handleDoubleClick = (event) => {
         event.preventDefault();
         const url = event.currentTarget.href;
-        if (onIconClick && url.includes('#')) {
+        if (onIconClick) {
             onIconClick(url);
-        } else {
-            window.location.href = url;
         }
     };
 
@@ -170,26 +243,33 @@ const IconsList: React.FC<IconsListProps> = ({ links, onIconClick, isOrganized =
     });
 
     return (
-        <ul className={vcr}>
+        <IconList className={vcr}>
             {links.map((link, index) => (
-                <li key={link.url} className={iconLink}
-                    style={{ top: position[index].top, left: position[index].left }}>
-                    <a ref={listRef} href={link.url}
-                        onClick={(event: MouseEvent) => handleSingleClick(event, index)}
-                        onDoubleClick={handleDoubleClick}
-                        onMouseDown={(event) => handleMouseDown(event, index)}
-                        onMouseMove={(event) => handleMouseMove(event, index)}
-                        onMouseUp={(event) => handleMouseUp(event, index)}
-                        draggable={true}
+                <IconListItem 
+                    key={link.url} 
+                    className={iconLink}
+                    style={!isMobile ? { top: position[index].top, left: position[index].left } : undefined}
+                >
+                    <IconLink
+                        ref={listRef}
+                        href={link.url}
+                        onClick={(event: MouseEvent) => handleClick(event, index, link.url)}
+                        {...(!isMobile ? {
+                            onDoubleClick: handleDoubleClick,
+                            onMouseDown: (event) => handleMouseDown(event, index),
+                            onMouseMove: (event) => handleMouseMove(event, index),
+                            onMouseUp: (event) => handleMouseUp(event, index),
+                            draggable: true
+                        } : {})}
                     >
                         <Icon selected={selected[index]}>
                             <img src={link.icon} className={icon} alt={link.text} />
                             <p>{link.text}</p>
                         </Icon>
-                    </a>
-                </li>
+                    </IconLink>
+                </IconListItem>
             ))}
-        </ul>
+        </IconList>
     );
 };
 
