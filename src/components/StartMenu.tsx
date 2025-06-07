@@ -99,44 +99,49 @@ interface Link {
 // Define the links array
 const links: Link[] = [
   {
+    text: "NADI NICOCO",
+    url: "/",
+    icon: "/icons/pencil-icon.png",
+  },
+  {
     text: "about",
     url: "/text-me",
-    icon: "icons/smile-icon.png",
+    icon: "/icons/smile-icon.png",
   },
   {
     text: "games",
     url: "#games",
-    icon: "icons/game-icon.png",
+    icon: "/icons/game-icon.png",
   },
   {
     text: "the copy",
     url: "#iwanna",
-    icon: "icons/iwannabenadinicoco-icon.png",
+    icon: "/icons/iwannabenadinicoco-icon.png",
   },
   {
     text: "websites",
     url: "#websites",
-    icon: "icons/internet-icon.png",
+    icon: "/icons/internet-icon.png",
   },
   {
     text: "music",
     url: "/x-sound",
-    icon: "icons/tape-icon.png",
+    icon: "/icons/tape-icon.png",
   },
   {
     text: "movies",
     url: "/movies",
-    icon: "icons/camera-icon.png",
+    icon: "/icons/camera-icon.png",
   },
   {
     text: "video art",
     url: "/x-art",
-    icon: "icons/computer-icon.png",
+    icon: "/icons/computer-icon.png",
   },
   {
     text: "cyborg-text",
     url: "#cyborg-text",
-    icon: "icons/writing-icon.png",
+    icon: "/icons/writing-icon.png",
   },
 ];
 
@@ -172,7 +177,21 @@ const StartMenu = (props: StartMenuProps): JSX.Element => {
       </Taskbar>
       
       <StartMenuContainer isOpen={isStartMenuOpen}>
-        {links.map((link) => (
+        {/* NADI NICOCO link */}
+        <MenuItem 
+          href="/"
+          onClick={(e) => {
+            e.preventDefault();
+            handleMenuItemClick("/");
+          }}
+        >
+          <img src="/icons/pencil-icon.png" alt="NADI NICOCO" />
+          <span>NADI NICOCO</span>
+        </MenuItem>
+        <MenuDivider />
+        
+        {/* Other menu items */}
+        {links.slice(1).map((link) => (
           <MenuItem 
             key={link.url}
             href={link.url}
