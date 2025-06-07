@@ -7,17 +7,19 @@
 }
 
 .icon {
-  height: 56px;
-  width: fit-content;
+  height: 84px;
+  width: 84px;
   color: darkmagenta;
-  margin-bottom: 0;
+  margin-bottom: -15px;
   mix-blend-mode: multiply;
+  object-fit: contain;
 }
 
 .iconLink {
   position: absolute;
   display: block;
   width: min-content;
+  text-decoration: none;
 }
 
 .header {

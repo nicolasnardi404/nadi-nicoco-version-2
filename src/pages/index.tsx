@@ -28,9 +28,9 @@ const links = [
     icon: "icons/internet-icon.png",
   },
   {
-    text: "sound",
+    text: "music",
     url: "/x-sound",
-    icon: "icons/x-sound.png",
+    icon: "icons/tape-icon.png",
   },
   {
     text: "movies",
@@ -40,12 +40,12 @@ const links = [
   {
     text: "video art",
     url: "/x-art",
-    icon: "icons/x-art.png",
+    icon: "icons/computer-icon.png",
   },
   {
     text: "cyborg-text",
     url: "/cyborg-text",
-    icon: "icons/cyborg-text.png",
+    icon: "icons/writing-icon.png",
   },
 ]
 

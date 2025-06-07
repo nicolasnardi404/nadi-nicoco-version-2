@@ -10,16 +10,28 @@ interface IconProps {
 const Icon = styled.li<IconProps>`
   display: flex;
   text-align: center;
-  width: 88px;
+  width: 120px;
   flex-direction: column;
   align-items: center;
-  padding: 4px;
   ${({ selected }) =>
         selected &&
         `
     background: rgba(100, 200, 200, 0.3);
     border: 2px dashed rgba(100, 200, 200, 0.9)
   `}
+
+  img {
+    width: 84px;
+    height: 84px;
+    object-fit: contain;
+  }
+
+  p {
+    font-size: 14px;
+    text-align: center;
+    word-wrap: break-word;
+    width: 100%;
+  }
 `;
 
 const useOutsideClick = (ref, callback) => {
