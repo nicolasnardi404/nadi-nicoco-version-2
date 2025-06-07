@@ -78,8 +78,9 @@ const IconList = styled.ul`
       width: 100%;
       max-width: 100%;
       margin: 0;
-    }
-  }
+     align-items: center;
+     margin 0 auto;
+       }
 `;
 
 const IconListItem = styled.li`

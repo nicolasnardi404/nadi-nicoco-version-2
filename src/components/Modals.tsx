@@ -135,6 +135,18 @@ const CyborgTextWindow = styled(ModalWindow)`
   flex-direction: column;
   overflow: hidden;
   background: #000;
+
+  @media (max-width: 768px) {
+    width: 100vw;
+    height: 100vh;
+    max-width: none;
+    max-height: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    margin: 0;
+    border: none;
+  }
 `;
 
 const CyborgTextContent = styled(ModalContent)`
@@ -144,6 +156,14 @@ const CyborgTextContent = styled(ModalContent)`
   gap: 20px;
   padding: 20px;
   background: #000;
+
+  @media (max-width: 768px) {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 10px;
+    overflow-y: auto;
+  }
 `;
 
 const CyborgIcon = styled.div`
@@ -161,6 +181,20 @@ const CyborgIcon = styled.div`
   &.selected {
     background: rgba(0,0,128,0.3);
   }
+
+  @media (max-width: 768px) {
+    width: 100%;
+    height: auto;
+    flex-direction: row;
+    padding: 10px;
+    gap: 15px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 12px;
+
+    &:active {
+      background: rgba(255, 255, 255, 0.15);
+    }
+  }
 `;
 
 const CyborgIconImage = styled.div`
@@ -173,6 +207,12 @@ const CyborgIconImage = styled.div`
     height: 100%;
     object-fit: contain;
   }
+
+  @media (max-width: 768px) {
+    width: 32px;
+    height: 32px;
+    margin-bottom: 0;
+  }
 `;
 
 const CyborgIconLabel = styled.div`
@@ -181,6 +221,12 @@ const CyborgIconLabel = styled.div`
   text-align: center;
   word-wrap: break-word;
   max-width: 90px;
+
+  @media (max-width: 768px) {
+    text-align: left;
+    font-size: 16px;
+    max-width: none;
+  }
 `;
 
 const CyborgTextNotepad = styled(ModalWindow)`
@@ -189,6 +235,20 @@ const CyborgTextNotepad = styled(ModalWindow)`
   height: 400px;
   display: flex;
   flex-direction: column;
+
+  @media (max-width: 768px) {
+    width: 100vw;
+    height: 100vh;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    margin: 0;
+    border: none;
+    z-index: 2000;
+    background: white;
+  }
 `;
 
 const NotepadContent = styled.div`
@@ -200,6 +260,25 @@ const NotepadContent = styled.div`
   font-size: 14px;
   line-height: 1.6;
   white-space: pre-wrap;
+
+  @media (max-width: 768px) {
+    padding: 16px;
+    font-size: 16px;
+    height: calc(100vh - 30px); /* Account for titlebar */
+    width: 100%;
+  }
+`;
+
+const MobileCloseButton = styled(ModalCloseButton)`
+  @media (max-width: 768px) {
+    width: 40px;
+    height: 40px;
+    font-size: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+  }
 `;
 
 interface ModalsProps {}
@@ -286,7 +365,13 @@ const Modals = (props: ModalsProps): JSX.Element => {
   };
 
   const handlePoemClick = (index: number) => {
+    const isMobile = window.matchMedia('(max-width: 768px)').matches;
     setSelectedPoem(index);
+    
+    // On mobile, open the poem immediately on click
+    if (isMobile) {
+      handlePoemDoubleClick(index);
+    }
   };
 
   const handlePoemDoubleClick = (index: number) => {
@@ -477,27 +562,28 @@ const Modals = (props: ModalsProps): JSX.Element => {
           {openPoems.map((poemIndex) => {
             const poem = cyborgText[poemIndex];
             const position = poemPositions[poemIndex] || { x: 100 + (poemIndex * 30), y: 50 + (poemIndex * 30) };
+            const isMobile = typeof window !== 'undefined' && window.matchMedia('(max-width: 768px)').matches;
             
             return (
               <CyborgTextNotepad
                 key={`poem-${poemIndex}`}
-                style={{
+                style={!isMobile ? {
                   top: position.y,
                   left: position.x
-                }}
+                } : undefined}
                 onClick={(e) => e.stopPropagation()}
               >
                 <ModalTitleBar
-                  onMouseDown={(e) => handlePoemMouseDown(e, poemIndex)}
+                  onMouseDown={(e) => !isMobile && handlePoemMouseDown(e, poemIndex)}
                   style={{
-                    cursor: draggingPoem?.id === poemIndex ? 'grabbing' : 'grab'
+                    cursor: !isMobile ? (draggingPoem?.id === poemIndex ? 'grabbing' : 'grab') : 'default'
                   }}
                 >
-                  <span>📝 {poem.title} - Notepad</span>
-                  <ModalCloseButton onClick={(e) => {
+                  <span>📝 {poem.title}</span>
+                  <MobileCloseButton onClick={(e) => {
                     e.stopPropagation();
                     handlePoemClose(poemIndex);
-                  }}>×</ModalCloseButton>
+                  }}>×</MobileCloseButton>
                 </ModalTitleBar>
                 <NotepadContent onClick={(e) => e.stopPropagation()}>
                   <div style={{ marginBottom: '16px' }}>
