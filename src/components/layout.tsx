@@ -6,7 +6,7 @@
  */
 
 import * as React from "react"
-import { ReactNode } from "react"
+import { ReactNode, useState, useEffect } from "react"
 import PropTypes from "prop-types"
 import { useStaticQuery, graphql } from "gatsby"
 
@@ -30,6 +30,18 @@ const Layout = ({ children }: LayoutProps): JSX.Element => {
       }
     }
   `)
+
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.matchMedia('(max-width: 768px)').matches);
+    };
+    
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   // Add event listener for StartMenu actions
   React.useEffect(() => {
@@ -82,7 +94,7 @@ const Layout = ({ children }: LayoutProps): JSX.Element => {
       </div>
       <StartMenu />
       <Modals />
-      <RetroAds />
+      {!isMobile && <RetroAds />}
     </>
   )
 }

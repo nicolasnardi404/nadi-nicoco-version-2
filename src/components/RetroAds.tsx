@@ -31,6 +31,10 @@ const AdWindow = styled.div<{ x: number; y: number; isDragging: boolean; zIndex:
   user-select: none;
   transition: ${props => props.isDragging ? 'none' : 'all 0.1s ease'};
   opacity: ${props => props.isDragging ? 0.8 : 1};
+
+  @media (max-width: 768px) {
+    display: none;
+  }
 `;
 
 const TitleBar = styled.div`
