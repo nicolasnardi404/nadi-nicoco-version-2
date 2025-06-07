@@ -108,6 +108,76 @@ const VideoContainer = styled.div`
   border: 2px inset #c0c0c0;
 `;
 
+const ImageContainer = styled.div`
+  background: #000;
+  padding: 10px;
+  margin: 10px 0;
+  border: 2px inset #c0c0c0;
+  position: relative;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  img {
+    width: auto;
+    max-width: 100%;
+    height: auto;
+    display: block;
+    transition: filter 0.3s ease;
+  }
+
+  &:hover img {
+    filter: none !important;
+  }
+
+  &:hover p {
+    opacity: 0;
+  }
+
+  p {
+    color: white;
+    font-size: 10px;
+    text-align: center;
+    margin-top: 5px;
+    transition: opacity 0.3s ease;
+    position: absolute;
+    bottom: 10px;
+    width: 100%;
+    left: 0;
+    text-shadow: 1px 1px 2px black;
+  }
+`;
+
+const InstagramLink = styled.a`
+  color: #000080;
+  text-decoration: none;
+  cursor: pointer;
+  
+  &:hover {
+    text-decoration: underline;
+  }
+`;
+
+const WarningText = styled.div`
+  background: #000080;
+  color: #fff;
+  padding: 5px;
+  margin: 5px 0;
+  text-align: center;
+  font-size: 11px;
+  border: 2px solid #fff;
+  animation: ${blink} 2s infinite;
+`;
+
+const ArtCredit = styled.div`
+  font-size: 10px;
+  color: #666;
+  text-align: center;
+  margin-top: 10px;
+  font-family: 'MS Sans Serif', sans-serif;
+`;
+
 interface Ad {
   id: number;
   title: string;
@@ -171,6 +241,44 @@ const ads: Ad[] = [
         <p style={{ fontSize: "8px", color: "#999", marginTop: "10px" }}>
           *Offer valid until the end of internet
         </p>
+      </>
+    ),
+    x: Math.random() * (window.innerWidth - 400),
+    y: Math.random() * (window.innerHeight - 300)
+  },
+  {
+    id: 4,
+    title: "🎭 LEAKED NUDE OF NADI NICOCO 🎭",
+    content: (
+      <>
+        <MarqueeText data-text="⚠️ LEAKED NUDE OF NADI NICOCO ⚠️">
+          ⚠️ LEAKED NUDE OF NADI NICOCO ⚠️
+        </MarqueeText>
+        <WarningText>
+          !!! EXCLUSIVE CONTENT !!!
+        </WarningText>
+        <ImageContainer>
+          <img 
+            src="/icons/nicoco-jesus.jpeg" 
+            alt="Performance Art Documentation" 
+            style={{ 
+              filter: "blur(20px)",
+              maxHeight: "60vh"  // This ensures the image doesn't get too tall on large screens
+            }}
+          />
+          <p>CLICK TO REVEAL THE TRUTH</p>
+        </ImageContainer>
+        <ArtCredit>
+          <br/>
+          Photo by:{" "}
+          <InstagramLink 
+            href="https://www.instagram.com/haut_lecoeur/" 
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            @haut_lecoeur
+          </InstagramLink>
+        </ArtCredit>
       </>
     ),
     x: Math.random() * (window.innerWidth - 400),
