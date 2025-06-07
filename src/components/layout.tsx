@@ -13,6 +13,7 @@ import { useStaticQuery, graphql } from "gatsby"
 import Header from "./header"
 import StartMenu from "./StartMenu"
 import Modals from "./Modals"
+import RetroAds from "./RetroAds"
 import "./layout.css"
 
 interface LayoutProps {
@@ -81,6 +82,7 @@ const Layout = ({ children }: LayoutProps): JSX.Element => {
       </div>
       <StartMenu />
       <Modals />
+      <RetroAds />
     </>
   )
 }
