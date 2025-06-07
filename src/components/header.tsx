@@ -92,7 +92,7 @@ interface HeaderProps {
   siteTitle: string;
 }
 
-const Header: React.FC<HeaderProps> = ({ siteTitle }) => {
+const Header = ({ siteTitle }: HeaderProps): JSX.Element => {
   const text = " WELCOME TO THE INTERNET ";
   const repeatedText = Array(20).fill(text).join("");
   
