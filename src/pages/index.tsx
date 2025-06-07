@@ -318,16 +318,17 @@ const CyborgTextWindow = styled(ModalWindow)`
   display: flex;
   flex-direction: column;
   overflow: hidden;
+  background: #000;
 `;
 
 const CyborgTextContent = styled(ModalContent)`
-  flex: 1;
   overflow: hidden;
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
   gap: 20px;
   padding: 20px;
   background: #000;
+
 `;
 
 const CyborgIcon = styled.div`
@@ -337,7 +338,6 @@ const CyborgIcon = styled.div`
   flex-direction: column;
   align-items: center;
   cursor: pointer;
-  padding: 8px;
   
   &:hover {
     background: rgba(255,255,255,0.1);
@@ -351,7 +351,7 @@ const CyborgIcon = styled.div`
 const CyborgIconImage = styled.div`
   width: 64px;
   height: 64px;
-  margin-bottom: 8px;
+  margin-bottom: 16px;
   
   img {
     width: 100%;
@@ -712,7 +712,7 @@ const IndexPage = () => {
                   }}
                 >
                   <CyborgIconImage>
-                    <img src="/icons/writing-icon.png" alt="Text file" />
+                    <img src="/icons/folder-icon.png" alt="Text file" />
                   </CyborgIconImage>
                   <CyborgIconLabel>{poem.title}</CyborgIconLabel>
                 </CyborgIcon>
