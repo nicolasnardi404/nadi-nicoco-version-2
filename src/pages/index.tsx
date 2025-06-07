@@ -1,5 +1,9 @@
 import * as React from "react"
 import { useState, MouseEvent, useEffect, useRef } from "react"
+import { renderRichText } from "gatsby-source-contentful/rich-text"
+import { INLINES, BLOCKS, MARKS } from "@contentful/rich-text-types"
+import { PoetryResponse } from "../types/GraphQLResponses"
+import { useStaticQuery, graphql } from "gatsby"
 
 import Layout from "../components/layout"
 import Seo from "../components/seo"
@@ -44,7 +48,7 @@ const links = [
   },
   {
     text: "cyborg-text",
-    url: "/cyborg-text",
+    url: "#cyborg-text",
     icon: "icons/writing-icon.png",
   },
 ]
@@ -306,12 +310,95 @@ const MenuDivider = styled.div`
   margin: 4px 0;
 `;
 
+const CyborgTextWindow = styled(ModalWindow)`
+  width: 90vw;
+  height: 90vh;
+  max-width: 1200px;
+  max-height: 800px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+`;
+
+const CyborgTextContent = styled(ModalContent)`
+  flex: 1;
+  overflow: hidden;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 20px;
+  padding: 20px;
+  background: #000;
+`;
+
+const CyborgIcon = styled.div`
+  width: 100px;
+  height: 120px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+  padding: 8px;
+  
+  &:hover {
+    background: rgba(255,255,255,0.1);
+  }
+  
+  &.selected {
+    background: rgba(0,0,128,0.3);
+  }
+`;
+
+const CyborgIconImage = styled.div`
+  width: 64px;
+  height: 64px;
+  margin-bottom: 8px;
+  
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+`;
+
+const CyborgIconLabel = styled.div`
+  color: white;
+  font-size: 12px;
+  text-align: center;
+  word-wrap: break-word;
+  max-width: 90px;
+`;
+
+const CyborgTextNotepad = styled(ModalWindow)`
+  position: absolute;
+  width: 600px;
+  height: 400px;
+  display: flex;
+  flex-direction: column;
+`;
+
+const NotepadContent = styled.div`
+  flex: 1;
+  padding: 16px;
+  background: white;
+  overflow-y: auto;
+  font-family: 'Courier New', monospace;
+  font-size: 14px;
+  line-height: 1.6;
+  white-space: pre-wrap;
+`;
+
 const IndexPage = () => {
   const [showGameModal, setShowGameModal] = useState(false);
   const [showIWannaBeModal, setShowIWannaBeModal] = useState(false);
   const [showWebsitesModal, setShowWebsitesModal] = useState(false);
   const [isOrganized, setIsOrganized] = useState(true);
   const [isStartMenuOpen, setIsStartMenuOpen] = useState(false);
+  const [showCyborgTextModal, setShowCyborgTextModal] = useState(false);
+  const [cyborgText, setCyborgText] = useState<PoetryResponse[]>([]);
+  const [openPoems, setOpenPoems] = useState<number[]>([]);
+  const [poemPositions, setPoemPositions] = useState<{[key: number]: {x: number, y: number}}>({});
+  const [selectedPoem, setSelectedPoem] = useState<number | null>(null);
+  const [draggingPoem, setDraggingPoem] = useState<{id: number, offsetX: number, offsetY: number} | null>(null);
 
   const handleOrganize = () => {
     setIsOrganized(!isOrganized);
@@ -328,6 +415,9 @@ const IndexPage = () => {
           break;
         case '#websites':
           setShowWebsitesModal(true);
+          break;
+        case '#cyborg-text':
+          setShowCyborgTextModal(true);
           break;
       }
     } else {
@@ -354,6 +444,8 @@ const IndexPage = () => {
     setShowGameModal(false);
     setShowIWannaBeModal(false);
     setShowWebsitesModal(false);
+    setShowCyborgTextModal(false);
+    setOpenPoems([]);
   };
 
   const handleStartClick = () => {
@@ -369,9 +461,83 @@ const IndexPage = () => {
     }
   };
 
+  const handlePoemClick = (index: number) => {
+    setSelectedPoem(index);
+  };
+
+  const handlePoemDoubleClick = (index: number) => {
+    if (!openPoems.includes(index)) {
+      setOpenPoems([...openPoems, index]);
+      // Set initial position if not already set
+      if (!poemPositions[index]) {
+        setPoemPositions(prev => ({
+          ...prev,
+          [index]: { 
+            x: 100 + (index * 30), 
+            y: 50 + (index * 30) 
+          }
+        }));
+      }
+    }
+  };
+
+  const handlePoemClose = (index: number) => {
+    setOpenPoems(openPoems.filter(i => i !== index));
+  };
+
+  const handlePoemMouseDown = (e: React.MouseEvent, poemId: number) => {
+    e.preventDefault();
+    e.stopPropagation();
+    const rect = e.currentTarget.getBoundingClientRect();
+    setDraggingPoem({
+      id: poemId,
+      offsetX: e.clientX - rect.left,
+      offsetY: e.clientY - rect.top
+    });
+  };
+
+  const handleMouseMove = (e: React.MouseEvent) => {
+    if (draggingPoem) {
+      const newX = e.clientX - draggingPoem.offsetX;
+      const newY = e.clientY - draggingPoem.offsetY;
+      
+      setPoemPositions(prev => ({
+        ...prev,
+        [draggingPoem.id]: { x: newX, y: newY }
+      }));
+    }
+  };
+
+  const handleMouseUp = () => {
+    setDraggingPoem(null);
+  };
+
+  // Fetch cyborg text data using static query
+  const data = useStaticQuery(graphql`
+    query {
+      allContentfulPoetry {
+        nodes {
+          poem {
+            raw
+          }
+          date
+          title
+          id
+        }
+      }
+    }
+  `);
+
+  // Update useEffect to use the static query data
+  useEffect(() => {
+    if (showCyborgTextModal && data?.allContentfulPoetry?.nodes) {
+      setCyborgText(data.allContentfulPoetry.nodes);
+    }
+  }, [showCyborgTextModal, data]);
+
   return (
     <Layout>
-      <Seo title="Home" />
+      <Seo title="Home">{null}</Seo>
       <IconsContainer isOrganized={isOrganized}>
         <IconsList 
           links={links} 
@@ -513,10 +679,112 @@ const IndexPage = () => {
           </ModalWindow>
         </ModalOverlay>
       )}
+
+      {/* Cyborg Text Modal */}
+      {showCyborgTextModal && (
+        <ModalOverlay 
+          onClick={(e) => {
+            // Only close if clicking directly on the overlay
+            if (e.target === e.currentTarget) {
+              closeModals();
+            }
+          }}
+          onMouseMove={handleMouseMove}
+          onMouseUp={handleMouseUp}
+        >
+          <CyborgTextWindow onClick={(e) => e.stopPropagation()}>
+            <ModalTitleBar>
+              <span>📝 Cyborg Text</span>
+              <ModalCloseButton onClick={closeModals}>×</ModalCloseButton>
+            </ModalTitleBar>
+            <CyborgTextContent onClick={(e) => e.stopPropagation()}>
+              {cyborgText.map((poem, index) => (
+                <CyborgIcon
+                  key={poem.id}
+                  className={selectedPoem === index ? 'selected' : ''}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handlePoemClick(index);
+                  }}
+                  onDoubleClick={(e) => {
+                    e.stopPropagation();
+                    handlePoemDoubleClick(index);
+                  }}
+                >
+                  <CyborgIconImage>
+                    <img src="/icons/writing-icon.png" alt="Text file" />
+                  </CyborgIconImage>
+                  <CyborgIconLabel>{poem.title}</CyborgIconLabel>
+                </CyborgIcon>
+              ))}
+            </CyborgTextContent>
+          </CyborgTextWindow>
+
+          {/* Open Poems */}
+          {openPoems.map((poemIndex) => {
+            const poem = cyborgText[poemIndex];
+            const position = poemPositions[poemIndex] || { x: 100 + (poemIndex * 30), y: 50 + (poemIndex * 30) };
+            
+            return (
+              <CyborgTextNotepad
+                key={`poem-${poemIndex}`}
+                style={{
+                  top: position.y,
+                  left: position.x
+                }}
+                onClick={(e) => e.stopPropagation()}
+              >
+                <ModalTitleBar
+                  onMouseDown={(e) => handlePoemMouseDown(e, poemIndex)}
+                  style={{
+                    cursor: draggingPoem?.id === poemIndex ? 'grabbing' : 'grab'
+                  }}
+                >
+                  <span>📝 {poem.title} - Notepad</span>
+                  <ModalCloseButton onClick={(e) => {
+                    e.stopPropagation();
+                    handlePoemClose(poemIndex);
+                  }}>×</ModalCloseButton>
+                </ModalTitleBar>
+                <NotepadContent onClick={(e) => e.stopPropagation()}>
+                  <div style={{ marginBottom: '16px' }}>
+                    <strong>File: {poem.title}</strong>
+                    <br />
+                    <small>Date: {poem.date || 'Unknown'}</small>
+                  </div>
+                  <hr style={{ margin: '8px 0' }} />
+                  {poem.poem && renderRichText(poem.poem, {
+                    renderMark: {
+                      [MARKS.BOLD]: text => <b style={{ fontWeight: 'bold', color: '#000' }}>{text}</b>,
+                    },
+                    renderNode: {
+                      [INLINES.HYPERLINK]: (node, children) => (
+                        <a href={node.data.uri} style={{ color: '#000', textDecoration: 'underline' }}>
+                          {children}
+                        </a>
+                      ),
+                      [BLOCKS.HEADING_2]: (node, children) => (
+                        <h2 style={{ fontSize: '16px', fontWeight: 'bold', margin: '10px 0', color: '#000' }}>
+                          {children}
+                        </h2>
+                      ),
+                      [BLOCKS.PARAGRAPH]: (node, children) => (
+                        <p style={{ whiteSpace: 'pre-wrap', margin: '0 0 1em 0', color: '#000' }}>
+                          {children}
+                        </p>
+                      )
+                    }
+                  })}
+                </NotepadContent>
+              </CyborgTextNotepad>
+            );
+          })}
+        </ModalOverlay>
+      )}
     </Layout>
   )
 }
 
-export const Head = () => <Seo title="Home" />
+export const Head = () => <Seo title="Home">{null}</Seo>
 
 export default IndexPage

@@ -10,7 +10,9 @@ export interface File {
 export interface GraphQlResponse {
     errors?: any;
     data?: { allContentfulXSound: { edges: { node: XSoundResponse }[] } } &
-    { allContentfulVideoArt: { edges: { node: VideoArtResponse }[] } } & { allContentfulPoetry: { nodes: any[] } };
+    { allContentfulVideoArt: { edges: { node: VideoArtResponse }[] } } & 
+    { allContentfulPoetry: { nodes: any[] } } &
+    { allContentfulShortMovies: { edges: { node: ShortMovieResponse }[] } };
 }
 
 export interface XSoundResponse {
