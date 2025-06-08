@@ -207,8 +207,8 @@ const ads: Ad[] = [
         </BlinkingButton>
       </>
     ),
-    x: Math.random() * (window.innerWidth - 400),
-    y: Math.random() * (window.innerHeight - 300)
+    x: 0,
+    y: 0
   },
   {
     id: 2,
@@ -230,8 +230,8 @@ const ads: Ad[] = [
         </BlinkingButton>
       </>
     ),
-    x: Math.random() * (window.innerWidth - 400),
-    y: Math.random() * (window.innerHeight - 400)
+    x: 0,
+    y: 0
   },
   {
     id: 3,
@@ -247,8 +247,8 @@ const ads: Ad[] = [
         </p>
       </>
     ),
-    x: Math.random() * (window.innerWidth - 400),
-    y: Math.random() * (window.innerHeight - 300)
+    x: 0,
+    y: 0
   },
   {
     id: 4,
@@ -285,8 +285,8 @@ const ads: Ad[] = [
         </ArtCredit>
       </>
     ),
-    x: Math.random() * (window.innerWidth - 400),
-    y: Math.random() * (window.innerHeight - 300)
+    x: 0,
+    y: 0
   }
 ];
 
@@ -304,6 +304,8 @@ const RetroAds: React.FC<RetroAdsProps> = () => {
   const dragRef = useRef<{lastX: number; lastY: number}>({ lastX: 0, lastY: 0 });
 
   const showRandomAd = useCallback(() => {
+    if (typeof window === 'undefined') return;
+    
     // Get all ads that haven't been shown yet
     const availableAds = ads.filter(ad => !shownAds.has(ad.id));
     
@@ -333,6 +335,8 @@ const RetroAds: React.FC<RetroAdsProps> = () => {
   }, [shownAds, zIndexes]);
 
   useEffect(() => {
+    if (typeof window === 'undefined') return;
+
     // Show first ad after 5 seconds
     const initialTimer = setTimeout(() => {
       showRandomAd();
@@ -400,30 +404,30 @@ const RetroAds: React.FC<RetroAdsProps> = () => {
   };
 
   const handleMouseMove = useCallback((e: MouseEvent) => {
-    if (draggingAd !== null) {
-      e.preventDefault();
-      
-      // Calculate new position ensuring the window stays within viewport
-      const newX = Math.max(0, Math.min(
-        e.clientX - dragOffset.x,
-        window.innerWidth - 400
-      ));
-      
-      const newY = Math.max(0, Math.min(
-        e.clientY - dragOffset.y,
-        window.innerHeight - 300
-      ));
+    if (typeof window === 'undefined' || draggingAd === null) return;
+    
+    e.preventDefault();
+    
+    // Calculate new position ensuring the window stays within viewport
+    const newX = Math.max(0, Math.min(
+      e.clientX - dragOffset.x,
+      window.innerWidth - 400
+    ));
+    
+    const newY = Math.max(0, Math.min(
+      e.clientY - dragOffset.y,
+      window.innerHeight - 300
+    ));
 
-      setPositions(prev => ({
-        ...prev,
-        [draggingAd]: { x: newX, y: newY }
-      }));
+    setPositions(prev => ({
+      ...prev,
+      [draggingAd]: { x: newX, y: newY }
+    }));
 
-      dragRef.current = {
-        lastX: e.clientX,
-        lastY: e.clientY
-      };
-    }
+    dragRef.current = {
+      lastX: e.clientX,
+      lastY: e.clientY
+    };
   }, [draggingAd, dragOffset]);
 
   const handleMouseUp = useCallback(() => {
@@ -431,14 +435,15 @@ const RetroAds: React.FC<RetroAdsProps> = () => {
   }, []);
 
   useEffect(() => {
-    if (draggingAd !== null) {
-      window.addEventListener('mousemove', handleMouseMove);
-      window.addEventListener('mouseup', handleMouseUp);
-      return () => {
-        window.removeEventListener('mousemove', handleMouseMove);
-        window.removeEventListener('mouseup', handleMouseUp);
-      };
-    }
+    if (typeof window === 'undefined' || draggingAd === null) return;
+
+    window.addEventListener('mousemove', handleMouseMove);
+    window.addEventListener('mouseup', handleMouseUp);
+    
+    return () => {
+      window.removeEventListener('mousemove', handleMouseMove);
+      window.removeEventListener('mouseup', handleMouseUp);
+    };
   }, [draggingAd, handleMouseMove, handleMouseUp]);
 
   return (
