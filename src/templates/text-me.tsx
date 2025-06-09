@@ -135,7 +135,7 @@ const AboutPage: React.FC = () => {
           <Win98Content>
             <ProfileSection>
               <ImageContainer>
-                <img src="/icons/R1-04716-008A.JPG" alt="Nadi Nicoco" />
+                <img src="/icons/R1-04716-008A.png" alt="Nadi Nicoco" />
               </ImageContainer>
               <BioText>
                 <h2>Nadi Nicoco</h2>
