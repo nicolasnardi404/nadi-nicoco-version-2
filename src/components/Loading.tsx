@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import styled from 'styled-components';
 
 const LoadingWrapper = styled.div`
@@ -107,6 +107,18 @@ const Copyright = styled.div`
 `;
 
 const Loading: React.FC = () => {
+  useEffect(() => {
+    // Remove the initial loading element when React's loading component mounts
+    const initialLoading = document.getElementById('gatsby-initial-loading');
+    if (initialLoading) {
+      initialLoading.style.opacity = '0';
+      initialLoading.style.transition = 'opacity 0.3s ease-out';
+      setTimeout(() => {
+        initialLoading.remove();
+      }, 300);
+    }
+  }, []);
+
   return (
     <LoadingWrapper>
       <LoadingBox>
