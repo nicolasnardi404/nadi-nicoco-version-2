@@ -33,7 +33,6 @@ html {
   font-size: var(--font-md);
   line-height: var(--line-height-normal);
   height: 100%;
-  overflow: hidden;
 }
 
 body {
@@ -50,17 +49,23 @@ body {
   background-position: center;
   background-repeat: no-repeat;
   background-attachment: fixed;
-  height: 100%;
-  overflow: hidden;
-  position: fixed;
+  min-height: 100%;
   width: 100%;
+}
+
+/* Only apply fixed positioning and overflow hidden to home page on desktop */
+body.is-home {
+  position: fixed;
+  overflow: hidden;
+  height: 100%;
   top: 0;
   left: 0;
 
   @media (max-width: 768px) {
     position: static;
-    min-height: 100vh;
     overflow: auto;
+    height: auto;
+    min-height: 100vh;
   }
 }
 

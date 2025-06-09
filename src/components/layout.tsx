@@ -9,6 +9,7 @@ import * as React from "react"
 import { ReactNode, useState, useEffect } from "react"
 import PropTypes from "prop-types"
 import { useStaticQuery, graphql, navigate } from "gatsby"
+import { useLocation } from '@reach/router'
 import styled from 'styled-components'
 
 import Header from "./header"
@@ -23,6 +24,7 @@ interface LayoutProps {
 
 const LayoutWrapper = styled.div`
   min-height: 100vh;
+
   position: relative;
 `;
 
@@ -38,6 +40,21 @@ const Layout = ({ children }: LayoutProps): JSX.Element => {
   `)
 
   const [isMobile, setIsMobile] = useState(false);
+  const location = useLocation();
+  const isHomePage = location.pathname === "/";
+
+  useEffect(() => {
+    // Add or remove is-home class based on current page
+    if (isHomePage) {
+      document.body.classList.add('is-home');
+    } else {
+      document.body.classList.remove('is-home');
+    }
+
+    return () => {
+      document.body.classList.remove('is-home');
+    };
+  }, [isHomePage]);
 
   useEffect(() => {
     const checkMobile = () => {
@@ -112,3 +129,4 @@ Layout.propTypes = {
 }
 
 export default Layout
+

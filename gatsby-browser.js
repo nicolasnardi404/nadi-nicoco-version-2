@@ -1,3 +1,6 @@
+// Track when loading started
+let loadStartTime
+
 // Remove loading screen and show content
 const removeLoading = () => {
   const initialLoading = document.getElementById("gatsby-initial-loading")
@@ -15,22 +18,15 @@ const removeLoading = () => {
       setTimeout(() => {
         initialLoading.remove()
       }, 300)
-    }, 1000) // Increased to 1 second
+    }, 300)
   }
 }
 
 export const onInitialClientRender = () => {
-  // Remove loading screen when React has loaded
+  // Just wait for the fixed time
   if (typeof window !== "undefined") {
-    // Wait for 1 second before starting to remove the loading screen
     setTimeout(() => {
-      const loadingScreen = document.getElementById("gatsby-initial-loading")
-      if (loadingScreen) {
-        loadingScreen.style.opacity = "0"
-        setTimeout(() => {
-          loadingScreen.remove()
-        }, 300)
-      }
+      removeLoading()
     }, 1200)
   }
 }
