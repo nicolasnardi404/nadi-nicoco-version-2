@@ -39,7 +39,7 @@ const Layout = ({ children }: LayoutProps): JSX.Element => {
   `)
 
   const [isMobile, setIsMobile] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     const checkMobile = () => {
@@ -79,11 +79,6 @@ const Layout = ({ children }: LayoutProps): JSX.Element => {
 
   // Handle page transitions and initial load
   useEffect(() => {
-    setIsLoading(true);
-    const timer = setTimeout(() => {
-      setIsLoading(false);
-    }, 1000);
-
     const handleRouteChange = () => {
       setIsLoading(true);
       setTimeout(() => {
@@ -93,7 +88,6 @@ const Layout = ({ children }: LayoutProps): JSX.Element => {
 
     window.addEventListener('gatsby-route-change', handleRouteChange);
     return () => {
-      clearTimeout(timer);
       window.removeEventListener('gatsby-route-change', handleRouteChange);
     };
   }, []);
@@ -129,7 +123,6 @@ const Layout = ({ children }: LayoutProps): JSX.Element => {
         }}
       >
         <main>{children}</main>
-
       </div>
       <StartMenu />
       <Modals />
