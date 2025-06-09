@@ -129,16 +129,7 @@ const Layout = ({ children }: LayoutProps): JSX.Element => {
         }}
       >
         <main>{children}</main>
-        <footer
-          style={{
-            marginTop: `var(--space-5)`,
-            fontSize: `var(--font-sm)`,
-            textAlign: 'center',
-            padding: '20px',
-          }}
-        >
-          ©
-        </footer>
+
       </div>
       <StartMenu />
       <Modals />

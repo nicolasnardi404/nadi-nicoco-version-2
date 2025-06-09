@@ -13,6 +13,7 @@ const Icon = styled.li<IconProps>`
   width: 120px;
   flex-direction: column;
   align-items: center;
+  margin: 0px 0px;
   ${({ selected }) =>
         selected &&
         `
