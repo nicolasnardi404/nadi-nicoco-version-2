@@ -9,7 +9,6 @@ import * as React from "react"
 import { ReactNode, useState, useEffect } from "react"
 import PropTypes from "prop-types"
 import { useStaticQuery, graphql, navigate } from "gatsby"
-import Loading from './Loading'
 import styled from 'styled-components'
 
 import Header from "./header"
@@ -39,7 +38,6 @@ const Layout = ({ children }: LayoutProps): JSX.Element => {
   `)
 
   const [isMobile, setIsMobile] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     const checkMobile = () => {
@@ -77,21 +75,6 @@ const Layout = ({ children }: LayoutProps): JSX.Element => {
     };
   }, []);
 
-  // Handle page transitions and initial load
-  useEffect(() => {
-    const handleRouteChange = () => {
-      setIsLoading(true);
-      setTimeout(() => {
-        setIsLoading(false);
-      }, 1000);
-    };
-
-    window.addEventListener('gatsby-route-change', handleRouteChange);
-    return () => {
-      window.removeEventListener('gatsby-route-change', handleRouteChange);
-    };
-  }, []);
-
   // Handle link clicks
   const handleLinkClick = (e: React.MouseEvent) => {
     const target = e.target as HTMLAnchorElement;
@@ -101,16 +84,9 @@ const Layout = ({ children }: LayoutProps): JSX.Element => {
       !target.getAttribute('href').startsWith('/#')
     ) {
       e.preventDefault();
-      setIsLoading(true);
-      setTimeout(() => {
-        navigate(target.getAttribute('href') || '/');
-      }, 500);
+      navigate(target.getAttribute('href') || '/');
     }
   };
-
-  if (isLoading) {
-    return <Loading />;
-  }
 
   return (
     <LayoutWrapper onClick={handleLinkClick}>

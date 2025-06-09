@@ -9,7 +9,33 @@ import React from 'react';
 export const onRenderBody = ({ setHtmlAttributes, setHeadComponents, setPreBodyComponents }) => {
   setHtmlAttributes({ lang: `en` });
 
-  // Add initial loading state that will be visible before React loads
+  // Add styles for loading and content transitions
+  setHeadComponents([
+    <style key="loading-styles">{`
+      #gatsby-initial-loading {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(to bottom right, #235CDC, #78B3F7);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        z-index: 9999;
+        opacity: 1;
+        transition: opacity 0.3s ease-out;
+      }
+
+      #___gatsby {
+        opacity: 0;
+        transition: opacity 0.3s ease-in;
+      }
+    `}</style>
+  ]);
+
+  // Add initial loading state
   setPreBodyComponents([
     <div
       key="loading-overlay"
@@ -45,7 +71,7 @@ export const onRenderBody = ({ setHtmlAttributes, setHeadComponents, setPreBodyC
       >
         <div>
           <p style={{ color: '#000', margin: 0, fontSize: '13px', fontWeight: 'bold' }}>
-            Welcome to nadinicoco
+            WELCOME TO THE INTERNET
           </p>
           <p style={{ color: '#666', margin: 0, fontSize: '11px' }}>
             Loading settings...

@@ -15,23 +15,33 @@ const removeLoading = () => {
       setTimeout(() => {
         initialLoading.remove()
       }, 300)
-    }, 300)
+    }, 1000) // Increased to 1 second
   }
 }
 
 export const onInitialClientRender = () => {
-  // Wait for fonts and images to load
+  // Remove loading screen when React has loaded
   if (typeof window !== "undefined") {
-    window.addEventListener("load", () => {
-      removeLoading()
-    })
+    // Wait for 1 second before starting to remove the loading screen
+    setTimeout(() => {
+      const loadingScreen = document.getElementById("gatsby-initial-loading")
+      if (loadingScreen) {
+        loadingScreen.style.opacity = "0"
+        setTimeout(() => {
+          loadingScreen.remove()
+        }, 300)
+      }
+    }, 1200)
   }
 }
 
-// Handle subsequent route changes
+// Handle page transitions
 export const onRouteUpdate = () => {
-  const gatsbyRoot = document.getElementById("___gatsby")
-  if (gatsbyRoot) {
-    gatsbyRoot.classList.add("loaded")
-  }
+  // Show content after a slight delay
+  setTimeout(() => {
+    const gatsbyRoot = document.getElementById("___gatsby")
+    if (gatsbyRoot) {
+      gatsbyRoot.style.opacity = "1"
+    }
+  }, 300)
 }
