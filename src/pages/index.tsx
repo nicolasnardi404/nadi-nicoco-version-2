@@ -1,11 +1,10 @@
 import * as React from "react"
-import { useState, useEffect } from "react"
+import { useState } from "react"
 import { useStaticQuery, graphql } from "gatsby"
 import type { HeadFC, PageProps } from "gatsby"
 
 import Layout from "../components/layout"
 import Seo from "../components/seo"
-import Loading from "../components/Loading"
 import styled from "styled-components"
 import IconsList from "../components/iconList"
 
@@ -122,16 +121,6 @@ const MobileContainer = styled.div`
 
 const IndexPage: React.FC<PageProps> = () => {
   const [isOrganized, setIsOrganized] = useState(true);
-  const [isLoading, setIsLoading] = useState(true);
-
-  useEffect(() => {
-    // Simulate loading time for resources
-    const timer = setTimeout(() => {
-      setIsLoading(false);
-    }, 1500); // Adjust this time as needed
-
-    return () => clearTimeout(timer);
-  }, []);
 
   const handleOrganize = () => {
     setIsOrganized(!isOrganized);
@@ -140,7 +129,6 @@ const IndexPage: React.FC<PageProps> = () => {
   const handleIconClick = (url: string) => {
     if (url.startsWith('#')) {
       const hash = url.substring(1);
-      // Restore modal handling
       window.dispatchEvent(new CustomEvent('startMenuAction', { 
         detail: { action: hash } 
       }));
@@ -148,10 +136,6 @@ const IndexPage: React.FC<PageProps> = () => {
       window.location.href = url;
     }
   };
-
-  if (isLoading) {
-    return <Loading />;
-  }
 
   return (
     <Layout>
@@ -164,7 +148,6 @@ const IndexPage: React.FC<PageProps> = () => {
         />
       </IconsContainer>
       
-      {/* Only show organize button on desktop */}
       <OrganizeButton onClick={handleOrganize}>
         {isOrganized ? '🎲 Randomize Icons' : '📋 Organize Icons'}
       </OrganizeButton>

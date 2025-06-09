@@ -8,7 +8,9 @@
 import * as React from "react"
 import { ReactNode, useState, useEffect } from "react"
 import PropTypes from "prop-types"
-import { useStaticQuery, graphql } from "gatsby"
+import { useStaticQuery, graphql, navigate } from "gatsby"
+import Loading from './Loading'
+import styled from 'styled-components'
 
 import Header from "./header"
 import StartMenu from "./StartMenu"
@@ -19,6 +21,11 @@ import "./layout.css"
 interface LayoutProps {
   children: ReactNode;
 }
+
+const LayoutWrapper = styled.div`
+  min-height: 100vh;
+  position: relative;
+`;
 
 const Layout = ({ children }: LayoutProps): JSX.Element => {
   const data = useStaticQuery(graphql`
@@ -32,6 +39,7 @@ const Layout = ({ children }: LayoutProps): JSX.Element => {
   `)
 
   const [isMobile, setIsMobile] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const checkMobile = () => {
@@ -47,7 +55,6 @@ const Layout = ({ children }: LayoutProps): JSX.Element => {
   React.useEffect(() => {
     const handleStartMenuAction = (event: CustomEvent<{ action: string }>) => {
       const { action } = event.detail;
-      // Handle different actions here if needed
       switch(action) {
         case 'games':
           // Handle games action
@@ -70,14 +77,55 @@ const Layout = ({ children }: LayoutProps): JSX.Element => {
     };
   }, []);
 
+  // Handle page transitions and initial load
+  useEffect(() => {
+    setIsLoading(true);
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 1000);
+
+    const handleRouteChange = () => {
+      setIsLoading(true);
+      setTimeout(() => {
+        setIsLoading(false);
+      }, 1000);
+    };
+
+    window.addEventListener('gatsby-route-change', handleRouteChange);
+    return () => {
+      clearTimeout(timer);
+      window.removeEventListener('gatsby-route-change', handleRouteChange);
+    };
+  }, []);
+
+  // Handle link clicks
+  const handleLinkClick = (e: React.MouseEvent) => {
+    const target = e.target as HTMLAnchorElement;
+    if (
+      target.tagName === 'A' && 
+      target.getAttribute('href')?.startsWith('/') &&
+      !target.getAttribute('href').startsWith('/#')
+    ) {
+      e.preventDefault();
+      setIsLoading(true);
+      setTimeout(() => {
+        navigate(target.getAttribute('href') || '/');
+      }, 500);
+    }
+  };
+
+  if (isLoading) {
+    return <Loading />;
+  }
+
   return (
-    <>
+    <LayoutWrapper onClick={handleLinkClick}>
       <Header siteTitle={data.site.siteMetadata?.title || `Title`} />
       <div
         style={{
           position: 'relative',
           minHeight: '100vh',
-          paddingBottom: '30px', // Add padding to account for the taskbar
+          paddingBottom: '30px',
         }}
       >
         <main>{children}</main>
@@ -95,7 +143,7 @@ const Layout = ({ children }: LayoutProps): JSX.Element => {
       <StartMenu />
       <Modals />
       {!isMobile && <RetroAds />}
-    </>
+    </LayoutWrapper>
   )
 }
 
