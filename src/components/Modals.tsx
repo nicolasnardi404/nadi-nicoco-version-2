@@ -40,6 +40,11 @@ const ModalTitleBar = styled.div`
   padding: 3px 6px;
   font-weight: bold;
   font-size: 12px;
+  width: 100%;
+`;
+
+const PoemModalTitleBar = styled(ModalTitleBar)`
+  width: 110%;
 `;
 
 const ModalCloseButton = styled.button`
@@ -263,9 +268,9 @@ const NotepadContent = styled.div`
 
   @media (max-width: 768px) {
     padding: 16px;
-    font-size: 16px;
+    font-size: 12px;
     height: calc(100vh - 30px); /* Account for titlebar */
-    width: 100%;
+    width: 110%;
   }
 `;
 
@@ -576,7 +581,8 @@ const Modals = (props: ModalsProps): JSX.Element => {
                 <ModalTitleBar
                   onMouseDown={(e) => !isMobile && handlePoemMouseDown(e, poemIndex)}
                   style={{
-                    cursor: !isMobile ? (draggingPoem?.id === poemIndex ? 'grabbing' : 'grab') : 'default'
+                    cursor: !isMobile ? (draggingPoem?.id === poemIndex ? 'grabbing' : 'grab') : 'default',
+                    width: !isMobile ? '100%' : '110%'
                   }}
                 >
                   <span>📝 {poem.title}</span>
