@@ -27,7 +27,7 @@ export const onInitialClientRender = () => {
   if (typeof window !== "undefined") {
     setTimeout(() => {
       removeLoading()
-    }, 1200)
+    }, 800)
   }
 }
 

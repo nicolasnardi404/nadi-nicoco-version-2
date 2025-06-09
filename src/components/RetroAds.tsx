@@ -340,7 +340,7 @@ const RetroAds: React.FC<RetroAdsProps> = () => {
     // Show first ad after 5 seconds
     const initialTimer = setTimeout(() => {
       showRandomAd();
-    }, 5000);
+    }, 10000);
 
     // Show subsequent ads every 15 seconds until all ads are shown
     const intervalTimer = setInterval(() => {
