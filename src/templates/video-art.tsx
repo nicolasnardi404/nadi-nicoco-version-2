@@ -14,6 +14,12 @@ const WindowsContainer = styled.div`
   gap: 20px;
   max-width: 1600px;
   margin: 0 auto;
+
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+    padding: 10px;
+    gap: 15px;
+  }
 `;
 
 const Win98Window = styled.div`
@@ -29,6 +35,11 @@ const Win98Window = styled.div`
   &:hover {
     z-index: 1;
   }
+
+  @media (max-width: 768px) {
+    border-width: 1px;
+    box-shadow: inset -1px -1px #858585, inset 1px 1px #dadada, 2px 2px 5px rgba(0,0,0,0.2);
+  }
 `;
 
 const Win98TitleBar = styled.div`
@@ -42,11 +53,20 @@ const Win98TitleBar = styled.div`
   justify-content: space-between;
   cursor: default;
   user-select: none;
+
+  @media (max-width: 768px) {
+    padding: 6px 8px;
+    font-size: 14px;
+  }
 `;
 
 const TitleBarButtons = styled.div`
   display: flex;
   gap: 2px;
+
+  @media (max-width: 768px) {
+    gap: 4px;
+  }
 `;
 
 const TitleBarButton = styled.button`
@@ -69,11 +89,21 @@ const TitleBarButton = styled.button`
     border-right-color: #fff;
     border-bottom-color: #fff;
   }
+
+  @media (max-width: 768px) {
+    width: 24px;
+    height: 24px;
+    font-size: 14px;
+  }
 `;
 
 const Win98Content = styled.div`
   padding: 16px;
   background: #c0c0c0;
+
+  @media (max-width: 768px) {
+    padding: 12px;
+  }
 `;
 
 const VideoContainer = styled.div`
@@ -90,6 +120,19 @@ const VideoContainer = styled.div`
     border: 2px solid #000;
     box-shadow: 2px 2px 0 #858585;
     max-width: 100%;
+    aspect-ratio: 16/9;
+    width: 100%;
+    height: auto;
+  }
+
+  @media (max-width: 768px) {
+    padding: 8px;
+    border-width: 1px;
+    
+    iframe {
+      border-width: 1px;
+      box-shadow: 1px 1px 0 #858585;
+    }
   }
 `;
 
@@ -106,6 +149,13 @@ const Description = styled.div`
   a {
     color: #000080;
     text-decoration: underline;
+  }
+
+  @media (max-width: 768px) {
+    padding: 12px;
+    font-size: 14px;
+    line-height: 1.5;
+    border-width: 1px;
   }
 `;
 
