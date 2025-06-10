@@ -53,6 +53,23 @@ const Clock = styled.div`
   }
 `;
 
+const ArchiveLink = styled.a`
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-family: 'MS Sans Serif', sans-serif;
+  font-size: 11px;
+  padding: 2px 8px;
+  text-decoration: none;
+  color: #000;
+  height: 22px;
+  border-left: 2px solid #808080;
+  
+  &:hover {
+    background: #d0d0d0;
+  }
+`;
+
 const StartButton = styled.button`
   height: 26px;
   padding: 0 8px;
@@ -230,6 +247,9 @@ const StartMenu = (props: StartMenuProps): JSX.Element => {
           <span>🪟</span> Start
         </StartButton>
         <SystemTray>
+        <ArchiveLink href="https://archive.nadinicoco.com" target="_blank" rel="noopener noreferrer">
+          🌍 Archive
+        </ArchiveLink>
           <SystemIcon title="Volume">🔊</SystemIcon>
           <SystemIcon title="Network">📶</SystemIcon>
           <Clock title={time.toLocaleDateString()}>
