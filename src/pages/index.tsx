@@ -7,6 +7,7 @@ import Layout from "../components/layout"
 import Seo from "../components/seo"
 import styled from "styled-components"
 import IconsList from "../components/iconList"
+import RetroAds from "../components/RetroAds"
 
 const links = [
   {
@@ -109,14 +110,6 @@ const IconsContainer = styled.div<{ isOrganized: boolean }>`
     margin: 0;
     max-width: none;
   }
-`
-
-const MobileContainer = styled.div`
-  @media (max-width: 768px) {
-    padding-top: env(safe-area-inset-top);
-    padding-bottom: env(safe-area-inset-bottom);
-    min-height: 100vh;
-  }
 `;
 
 const IndexPage: React.FC<PageProps> = () => {
@@ -151,10 +144,11 @@ const IndexPage: React.FC<PageProps> = () => {
       <OrganizeButton onClick={handleOrganize}>
         {isOrganized ? '🎲 Randomize Icons' : '📋 Organize Icons'}
       </OrganizeButton>
+      <RetroAds />
     </Layout>
-  )
-}
+  );
+};
 
-export const Head: HeadFC = () => <Seo title="Home" />
+export const Head: HeadFC = () => <Seo title="Home" />;
 
-export default IndexPage
+export default IndexPage;
