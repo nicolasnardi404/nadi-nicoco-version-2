@@ -99,6 +99,17 @@ const IconLink = styled.a`
   @media (max-width: 768px) {
     width: 100%;
     display: block;
+    text-decoration: none;
+  }
+  
+  &:visited {
+    color: inherit;
+        text-decoration: none;
+  }
+  
+  &:link {
+    color: inherit;
+        text-decoration: none;
   }
 `;
 
