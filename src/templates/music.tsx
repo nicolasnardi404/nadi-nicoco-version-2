@@ -143,12 +143,22 @@ const Music: React.FC<{ pageContext: { xSound: XSoundResponse[] } }> = ({ pageCo
         return { __html: text };
     }
 
+    const youtubePlaylistEmbed = `<iframe 
+        width="100%" 
+        height="315" 
+        src="https://www.youtube.com/embed/videoseries?list=PL8CgOr8axj_KkfulCVwu3q8fMMNcjTb0a" 
+        title="ESQUIZO CIBORGUE - Nadi Nicoco"
+        frameborder="0" 
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+        allowfullscreen>
+    </iframe>`;
+
     return (
         <Layout>
             <Win98Container>
                 <Win98Window>
                     <Win98TitleBar>
-                        <span>🎵 Music Player</span>
+                        <span>🎵 Music Player - ESQUIZO CIBORGUE</span>
                         <div>
                             <button style={{
                                 background: '#c0c0c0',
@@ -168,7 +178,7 @@ const Music: React.FC<{ pageContext: { xSound: XSoundResponse[] } }> = ({ pageCo
                                 padding: '0px 5px',
                                 fontSize: '11px',
                                 cursor: 'pointer',
-                                marginLeft: '2px'
+                              
                             }}>×</button>
                         </div>
                     </Win98TitleBar>
@@ -181,6 +191,27 @@ const Music: React.FC<{ pageContext: { xSound: XSoundResponse[] } }> = ({ pageCo
                     </MenuBar>
 
                     <Win98Content>
+                        {/* ESQUIZO CIBORGUE Album Card */}
+                        <MusicCard>
+                            <MusicTitle>ESQUIZO CIBORGUE - Visual Album</MusicTitle>
+                            <Hero>
+                                <div dangerouslySetInnerHTML={createMarkup(youtubePlaylistEmbed)}></div>
+                            </Hero>
+                            <Description>
+                          
+                                <p>A multimedia piece blending music, poetry, and video. The visuals combine personal childhood VHS archives with AI-generated imagery and analog video distortion tools, creating a layered experience where distorted poetry merges with experimental noise.</p>
+                                <a 
+                                    href="https://www.youtube.com/watch?v=42cfKE3OCfA&list=PL8CgOr8axj_KkfulCVwu3q8fMMNcjTb0a" 
+                                    target="_blank" 
+                                    rel="noopener noreferrer"
+                                    style={{ display: 'inline-block', marginTop: '10px' }}
+                                >
+                                    CHECK WHOLE EP WITH VIDEOS ON YOUTUBE
+                                </a>
+                            </Description>
+                        </MusicCard>
+
+                        {/* Regular Music Cards */}
                         {xSound.map((music, index) => (
                             <MusicCard key={index}>
                                 <MusicTitle>{music.title}</MusicTitle>
@@ -210,7 +241,7 @@ const Music: React.FC<{ pageContext: { xSound: XSoundResponse[] } }> = ({ pageCo
                     display: 'flex',
                     justifyContent: 'space-between'
                 }}>
-                    <span>{xSound.length} tracks loaded</span>
+                    <span>{xSound.length + 1} tracks loaded</span>
                     <span>{new Date().toLocaleTimeString()}</span>
                 </div>
             </Win98Container>
