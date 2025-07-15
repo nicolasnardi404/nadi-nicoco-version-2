@@ -134,6 +134,7 @@ export const query = graphql`
     allContentfulShortMovies {
       edges {
         node {
+          idControl
           title
           description {
             raw
@@ -156,7 +157,21 @@ interface MoviesProps {
 }
 
 const Movies: React.FC<MoviesProps> = ({ data }) => {
-  const movies = data?.allContentfulShortMovies?.edges?.map(edge => edge.node) || [];
+  const unsortedMovies = data?.allContentfulShortMovies?.edges?.map(edge => edge.node) || [];
+  
+  // Sort movies: first by idControl (if present), then the rest
+  const movies = [...unsortedMovies].sort((a, b) => {
+    // If both have idControl, sort by idControl
+    if (a.idControl && b.idControl) {
+      return parseInt(a.idControl) - parseInt(b.idControl);
+    }
+    // If only a has idControl, it comes first
+    if (a.idControl) return -1;
+    // If only b has idControl, it comes first
+    if (b.idControl) return 1;
+    // If neither has idControl, maintain original order
+    return 0;
+  });
 
   const formatYouTubeUrl = (url: string) => {
     const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
@@ -222,7 +237,7 @@ const Movies: React.FC<MoviesProps> = ({ data }) => {
               </div>
             ) : (
               movies.map((movie, index) => (
-                <MovieCard key={index}>
+                <MovieCard key={movie.idControl || index}>
                   <MovieTitle>{movie.title}</MovieTitle>
                   <VideoContainer>
                     <iframe 

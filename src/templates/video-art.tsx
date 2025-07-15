@@ -184,17 +184,92 @@ const options = {
 const Post: React.FC<{ pageContext: { videoArt: VideoArtResponse[] } }> = ({ pageContext }) => {
     const { videoArt } = pageContext;
 
+    // Debug logs for Contentful data
+    console.log('=== VIDEO ART DEBUG LOGS ===');
+    console.log('Full pageContext:', pageContext);
+    console.log('Raw videoArt array:', videoArt);
+    
+    videoArt.forEach((video, index) => {
+        console.log(`\nVideo ${index + 1} Details:`, {
+            title: video.title,
+            id: video.id,
+            location: video.location,
+            date: video.date,
+            category: video.category,
+            hasEmbed: !!video.embed,
+            embedContent: video.embed?.embed,
+            hasDescription: !!video.description,
+            descriptionRaw: video.description?.raw,
+        });
+    });
+
+    console.log('\nTotal number of videos:', videoArt.length);
+    console.log('=== END DEBUG LOGS ===\n');
+
     function createMarkup(text) {
         return { __html: text };
     }
 
+    // Sort videos: first by ID (if present), then the rest
+    const sortedVideos = [...videoArt].sort((a, b) => {
+        console.log('\nSorting comparison:', {
+            videoA: {
+                title: a.title,
+                id: a.id,
+                hasId: !!a.id,
+                parsedId: a.id ? parseInt(a.id) : null
+            },
+            videoB: {
+                title: b.title,
+                id: b.id,
+                hasId: !!b.id,
+                parsedId: b.id ? parseInt(b.id) : null
+            }
+        });
+
+        // If both have IDs, sort by ID
+        if (a.id && b.id) {
+            const result = parseInt(a.id) - parseInt(b.id);
+            console.log(`Both have IDs: ${a.id} vs ${b.id}, result: ${result}`);
+            return result;
+        }
+        // If only a has ID, it comes first
+        if (a.id) {
+            console.log(`Only A has ID: ${a.id}, placing A first`);
+            return -1;
+        }
+        // If only b has ID, it comes first
+        if (b.id) {
+            console.log(`Only B has ID: ${b.id}, placing B first`);
+            return 1;
+        }
+        // If neither has ID, maintain original order
+        console.log('Neither has ID, maintaining order');
+        return 0;
+    });
+
+    console.log('\nFinal sorted order:', sortedVideos.map(v => ({
+        title: v.title,
+        id: v.id,
+        hasDescription: !!v.description,
+        hasEmbed: !!v.embed
+    })));
+
     return (
         <Layout>
             <WindowsContainer>
-                {videoArt.map((video, index) => (
+                {sortedVideos.map((video, index) => {
+                    console.log(`Rendering video ${index}:`, { 
+                        id: video.id, 
+                        title: video.title,
+                        hasEmbed: !!video.embed,
+                        hasDescription: !!video.description 
+                    });
+                    
+                    return (
                     <Win98Window key={index}>
                         <Win98TitleBar>
-                            <span>🎥 {video.title}</span>
+                            <span>🎥 {video.id ? `${video.id}. ${video.title}` : video.title}</span>
                             <TitleBarButtons>
                                 <TitleBarButton>_</TitleBarButton>
                                 <TitleBarButton>□</TitleBarButton>
@@ -212,7 +287,8 @@ const Post: React.FC<{ pageContext: { videoArt: VideoArtResponse[] } }> = ({ pag
                             )}
                         </Win98Content>
                     </Win98Window>
-                ))}
+                    );
+                })}
             </WindowsContainer>
         </Layout>
     );
