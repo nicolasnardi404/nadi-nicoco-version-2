@@ -12,5 +12,12 @@
   ],
   "env": {
     "SHARP_IGNORE_GLOBAL_LIBVIPS": "1"
-  }
+  },
+  "redirects": [
+    {
+      "source": "/pages/voices.html",
+      "destination": "https://archive.nadinicoco.com/pages/voices.html",
+      "permanent": true
+    }
+  ]
 } 
