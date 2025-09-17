@@ -52,6 +52,7 @@ const Icon = styled.li<IconProps>`
     @media (max-width: 768px) {
       width: 32px;
       height: 32px;
+      mix-blend-mode: normal;
     }
   }
 
@@ -65,6 +66,8 @@ const Icon = styled.li<IconProps>`
       text-align: left;
       font-size: 16px;
       margin: 0;
+      color: white;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
     }
   }
 `;
