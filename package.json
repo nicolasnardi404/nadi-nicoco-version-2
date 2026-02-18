@@ -16,6 +16,7 @@
   "dependencies": {
     "@babel/core": "^7.22.5",
     "@contentful/rich-text-html-renderer": "^15.13.1",
+    "@vercel/analytics": "^1.6.1",
     "babel-eslint": "^10.1.0",
     "contentful": "^9.2.13",
     "dotenv": "^16.0.2",
