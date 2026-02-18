@@ -32,7 +32,24 @@ export const onRenderBody = ({ setHtmlAttributes, setHeadComponents, setPreBodyC
         opacity: 0;
         transition: opacity 0.3s ease-in;
       }
-    `}</style>
+    `}</style>,
+    // Google Analytics
+    <script
+      key="google-analytics"
+      async
+      src="https://www.googletagmanager.com/gtag/js?id=G-4RY1M5NECP"
+    />,
+    <script
+      key="google-analytics-config"
+      dangerouslySetInnerHTML={{
+        __html: `
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'G-4RY1M5NECP');
+        `,
+      }}
+    />,
   ]);
 
   // Add initial loading state
