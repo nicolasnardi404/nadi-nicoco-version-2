@@ -503,15 +503,10 @@ const Modals = (props: ModalsProps): JSX.Element => {
             </ModalTitleBar>
             <ModalContent>
               <GameTitle>Visit My Websites:</GameTitle>
-              
-              <GameButton onClick={() => handleWebsiteSelection('https://cutethingsonline.com')}>
-                <GameIcon>🌸</GameIcon>
-                CUTE THINGS ONLINE
-              </GameButton>
-              
-              <GameButton onClick={() => handleWebsiteSelection('https://randomrainbow.art')}>
-                <GameIcon>🌈</GameIcon>
-                RANDOM RAINBOW
+
+              <GameButton onClick={() => handleWebsiteSelection('https://studio.nadinicoco.com')}>
+                <GameIcon>🎨</GameIcon>
+                NICOCO'S STUDIO
               </GameButton>
 
               <GameButton onClick={() => handleWebsiteSelection('https://quartoambiente.com.br')}>

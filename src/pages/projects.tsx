@@ -127,15 +127,6 @@ const projects = [
     longDescription: "Cyber Planta is an AI-driven project focused on sharing knowledge about bio-agriculture, fungi, and eco-feminism."
   },
   {
-    id: 2,
-    title: "RANDOM RAINBOW",
-    description: "Queer Video Art Platform",
-    imageName: "/images/randomrainbow.png",
-    tags: ["React", "JavaScript", "Java", "Spring Boot", "PostgreSQL", "Docker", "Deployment"],
-    url: "https://www.randomrainbow.art",
-    longDescription: "Random Rainbow is a cyber art project designed to connect queer video art through a random experience."
-  },
-  {
     id: 3,
     title: "I WANNA BE NADI NICOCO",
     description: "AI Generative Poetry",

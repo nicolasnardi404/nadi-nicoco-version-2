@@ -182,6 +182,210 @@ const ArtCredit = styled.div`
   font-family: 'MS Sans Serif', sans-serif;
 `;
 
+const rainbowShift = keyframes`
+  0% { background-position: 0% 50%; }
+  100% { background-position: 200% 50%; }
+`;
+
+const wiggle = keyframes`
+  0%, 100% { transform: rotate(-4deg); }
+  50% { transform: rotate(4deg); }
+`;
+
+const bob = keyframes`
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-3px); }
+`;
+
+const twinkle = keyframes`
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.2; transform: scale(0.6); }
+`;
+
+const StudioBanner = styled.div`
+  position: relative;
+  margin: -15px -15px 12px;
+  padding: 14px 10px 12px;
+  background: linear-gradient(90deg, #ff4fd8, #ffb84f, #fff34f, #4fff8a, #4fc3ff, #b44fff, #ff4fd8);
+  background-size: 200% 100%;
+  animation: ${rainbowShift} 4s linear infinite;
+  border-bottom: 2px solid #000;
+`;
+
+const StudioTitle = styled.div`
+  font-family: 'Courier New', monospace;
+  font-size: 22px;
+  font-weight: bold;
+  letter-spacing: 2px;
+  color: #fff;
+  text-shadow: 2px 2px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000;
+`;
+
+const StudioSubtitle = styled.div`
+  font-size: 11px;
+  font-weight: bold;
+  color: #000;
+  margin-top: 4px;
+`;
+
+const Sparkle = styled.span<{ top: string; left: string; delay: string }>`
+  position: absolute;
+  top: ${p => p.top};
+  left: ${p => p.left};
+  font-size: 14px;
+  animation: ${twinkle} 1.4s ease-in-out infinite;
+  animation-delay: ${p => p.delay};
+  pointer-events: none;
+`;
+
+const NewSticker = styled.div`
+  position: absolute;
+  top: -6px;
+  right: -4px;
+  width: 46px;
+  height: 46px;
+  line-height: 46px;
+  background: #ffef00;
+  color: #ff0000;
+  font-weight: bold;
+  font-size: 12px;
+  clip-path: polygon(50% 0%, 61% 18%, 82% 10%, 78% 32%, 100% 39%, 84% 55%, 96% 75%, 73% 76%, 68% 100%, 50% 86%, 32% 100%, 27% 76%, 4% 75%, 16% 55%, 0% 39%, 22% 32%, 18% 10%, 39% 18%);
+  animation: ${wiggle} 0.8s ease-in-out infinite;
+`;
+
+const ToolGrid = styled.div`
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin: 10px 0;
+`;
+
+const ToolTile = styled.div<{ delay: string }>`
+  background: #fffbe8;
+  border: 2px solid #000;
+  box-shadow: 3px 3px 0 #000;
+  padding: 6px 2px 4px;
+  font-size: 9px;
+  font-weight: bold;
+  text-transform: uppercase;
+
+  svg {
+    display: block;
+    margin: 0 auto 4px;
+    animation: ${bob} 1.6s ease-in-out infinite;
+    animation-delay: ${p => p.delay};
+  }
+`;
+
+// Tiny pixel-art drawings: each row is a string, each char maps to a color
+const PIXEL_COLORS: { [key: string]: string } = {
+  k: "#000", w: "#fff", r: "#ff3b3b", p: "#ff4fd8", o: "#ffa53b", y: "#ffe23b",
+  g: "#3bd16f", b: "#3b8bff", v: "#9b4fff", t: "#c98a4b", s: "#ffd1a8", c: "#4fe3ff",
+};
+
+const PixelArt: React.FC<{ art: string[]; size?: number }> = ({ art, size = 32 }) => (
+  <svg width={size} height={size} viewBox={`0 0 ${art[0].length} ${art.length}`} shapeRendering="crispEdges">
+    {art.flatMap((row, y) =>
+      row.split("").map((ch, x) =>
+        PIXEL_COLORS[ch] ? <rect key={`${x}-${y}`} x={x} y={y} width={1} height={1} fill={PIXEL_COLORS[ch]} /> : null
+      )
+    )}
+  </svg>
+);
+
+const STUDIO_TOOLS: { name: string; art: string[] }[] = [
+  {
+    name: "Pixel Animator",
+    art: [
+      "..kkkkkkk...",
+      ".kwwwwwwwk..",
+      "kwrrwwwbbwk.",
+      "kwrrwwwbbwk.",
+      "kwwwwwwwwwwk",
+      "kwyywwwggwwk",
+      "kwyywwwggwwk",
+      "kwwwwwwwwwk.",
+      ".kwwwkkkkk..",
+      "..kkk.......",
+    ],
+  },
+  {
+    name: "Kinetic Type",
+    art: [
+      "kkkkkkkkkk..",
+      "kppppppppk..",
+      "kkkkppkkkk..",
+      "...kppk.....",
+      "...kppk..kk.",
+      "...kppk.kyyk",
+      "...kppk.kyyk",
+      "...kppk..kk.",
+      "...kppk.....",
+      "...kkkk.....",
+    ],
+  },
+  {
+    name: "Gradients",
+    art: [
+      "............",
+      "..kkkkkkkk..",
+      ".kprroyygbk.",
+      ".kprroyygbk.",
+      ".kprroyygbk.",
+      ".kprroyygbk.",
+      ".kprroyygbk.",
+      "..kkkkkkkk..",
+      "............",
+      "............",
+    ],
+  },
+  {
+    name: "3D Scenes",
+    art: [
+      "....kkkk....",
+      "..kkccccdkk.",
+      "kkccccccckkk",
+      "kbkkcccckvvk",
+      "kbbbkkkkvvvk",
+      "kbbbbbkvvvvk",
+      "kbbbbbkvvvvk",
+      ".kkbbbkvvkk.",
+      "...kkbkkk...",
+      ".....k......",
+    ].map(r => r.replace(/d/g, "c")),
+  },
+  {
+    name: "Hand Synth",
+    art: [
+      "....k.k.....",
+      "...ksksk.k..",
+      "...ksksksk..",
+      ".k.ksksksk..",
+      "ksk.sssssk..",
+      ".ksssssssk..",
+      "..ksssssk...",
+      "...ksssk....",
+      "...ksssk....",
+      "...kkkkk....",
+    ],
+  },
+  {
+    name: "Music Synth",
+    art: [
+      "....kkkkkkk.",
+      "....kvvvvvk.",
+      "....kkkkkvk.",
+      "....k....vk.",
+      "....k....vk.",
+      "....k..kkvk.",
+      "..kkk.kvvvk.",
+      ".kvvvk.kkk..",
+      ".kvvvk......",
+      "..kkk.......",
+    ],
+  },
+];
+
 interface Ad {
   id: number;
   title: string;
@@ -193,17 +397,34 @@ interface Ad {
 const ads: Ad[] = [
   {
     id: 1,
-    title: "🎨 CALLING ALL QUEER VIDEO ARTISTS! 🎨",
+    title: "🎨 FREE CREATIVE TOOLS INSIDE! 🎨",
     content: (
       <>
-        <MarqueeText data-text="✨ SUBMIT YOUR WORK NOW! ✨">
-          ✨ SUBMIT YOUR WORK NOW! ✨
-        </MarqueeText>
-        <p style={{ margin: "10px 0" }}>
-          Are you a QUEER VIDEO ARTIST looking for a cute platform to showcase your work? 
+        <StudioBanner>
+          <Sparkle top="6px" left="12px" delay="0s">✦</Sparkle>
+          <Sparkle top="30px" left="40px" delay="0.5s">✧</Sparkle>
+          <Sparkle top="8px" left="300px" delay="0.9s">✦</Sparkle>
+          <Sparkle top="34px" left="270px" delay="0.3s">✧</Sparkle>
+          <NewSticker>NEW!</NewSticker>
+          <StudioTitle>NICOCO'S STUDIO</StudioTitle>
+          <StudioSubtitle>~ experimental toolbox for creatives ~</StudioSubtitle>
+        </StudioBanner>
+        <ToolGrid>
+          {STUDIO_TOOLS.map((tool, i) => (
+            <ToolTile key={tool.name} delay={`${i * 0.2}s`}>
+              <PixelArt art={tool.art} />
+              {tool.name}
+            </ToolTile>
+          ))}
+        </ToolGrid>
+        <p style={{ margin: "8px 0", fontWeight: "bold" }}>
+          ...and video lab, photo lab, cosmic playground & MORE!!!
         </p>
-        <BlinkingButton onClick={() => window.open("https://randomrainbow.art", "_blank")}>
-          JOIN RANDOM RAINBOW NOW!
+        <WarningText>
+          !!! 10 TOOLS - 100% FREE - NO DOWNLOAD !!!
+        </WarningText>
+        <BlinkingButton onClick={() => window.open("https://studio.nadinicoco.com", "_blank")}>
+          ENTER THE STUDIO NOW!
         </BlinkingButton>
       </>
     ),
